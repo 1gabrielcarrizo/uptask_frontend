@@ -1,7 +1,7 @@
 import React, { useState } from 'react'
 import { Link } from 'react-router-dom'
 import Alerta from '../components/Alerta'
-import axios from 'axios'
+import clienteAxios from '../config/clienteAxios'
 
 const Registrar = () => {
   // creamos 4 state para los 4 campos
@@ -41,7 +41,7 @@ const Registrar = () => {
     // crear el usuario en la API (funcion registrar en nuestro backend)
     try {
       // usamos "await" porque en el back la funcion "registrar" usa "async"
-      const {data} = await axios.post(`${import.meta.env.VITE_BACKEND_URL}/api/usuarios`, {nombre, email, password})
+      const {data} = await clienteAxios.post(`/usuarios`, {nombre, email, password})
       setAlerta({
         msg: data.msg, // data.msg muestra el mensaje del backend
         error: false
