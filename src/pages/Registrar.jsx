@@ -1,6 +1,7 @@
 import React, { useState } from 'react'
 import { Link } from 'react-router-dom'
 import Alerta from '../components/Alerta'
+import axios from 'axios'
 
 const Registrar = () => {
   // creamos 4 state para los 4 campos
@@ -10,7 +11,7 @@ const Registrar = () => {
   const [repetirPassword, setRepetirPassword] = useState('')
   const [alerta, setAlerta] = useState({})
 
-  const handleSubmit = (e) => {
+  const handleSubmit = async (e) => {
     e.preventDefault()
     // convertirmos las variables normales con string a un arreglo
     if([nombre,email,password,repetirPassword].includes('')){
@@ -37,8 +38,26 @@ const Registrar = () => {
       return
     }
     setAlerta({})
-    // crear el usuario en la API
-    console.log("creando...")
+    // crear el usuario en la API (funcion registrar en nuestro backend)
+    try {
+      // usamos "await" porque en el back la funcion "registrar" usa "async"
+      const {data} = await axios.post(`${import.meta.env.VITE_BACKEND_URL}/api/usuarios`, {nombre, email, password})
+      setAlerta({
+        msg: data.msg, // data.msg muestra el mensaje del backend
+        error: false
+      })
+      // reiniciar los campos del formulario
+      setNombre('')
+      setEmail('')
+      setPassword('')
+      setRepetirPassword('')
+    } catch (error) {
+      setAlerta({
+        // para acceder a los mensajes de error del back, se usa el "response"
+        msg: error.response.data.msg,
+        error: true
+      })
+    }
   }
 
   // extramemos msg de alerta en caso de que exista
