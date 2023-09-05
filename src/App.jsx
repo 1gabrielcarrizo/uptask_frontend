@@ -14,6 +14,7 @@ import NuevoProyecto from './pages/NuevoProyecto'
 
 import { AuthProvider } from './context/AuthProvider'
 import { ProyectosProvider } from './context/ProyectosProvider'
+import Proyecto from './pages/Proyecto'
 
 const App = () => {
   return (
@@ -33,6 +34,7 @@ const App = () => {
             <Route path='/proyectos' element={<RutaProtegida />}>
               <Route index element={<Proyectos />} />
               <Route path='crear-proyecto' element={<NuevoProyecto />} />
+              <Route path=':id' element={<Proyecto/>} />
             </Route>
           </Routes>
         </ProyectosProvider>

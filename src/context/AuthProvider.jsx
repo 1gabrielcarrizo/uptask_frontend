@@ -32,7 +32,7 @@ const AuthProvider = ({ children }) => {
                 const { data } = await clienteAxios('/usuarios/perfil', config)
                 setAuth(data)
                 // la linea de abajo es opcional, es equivalente a usar "refresh token"
-                navigate('/proyectos') // si se autentico bien, lo redirige a "/proyectos"
+                // navigate('/proyectos') // si se autentico bien, lo redirige a "/proyectos"
             } catch (error) {
                 // console.error(error.response.data.msg)
                 setAuth({})

@@ -1,13 +1,40 @@
 import React, { createContext, useEffect, useState } from 'react'
 import clienteAxios from '../config/clienteAxios'
-import {useNavigate} from 'react-router-dom'
+import { useNavigate } from 'react-router-dom'
 
 const ProyectosContext = createContext()
 
-const ProyectosProvider = ({children}) => {
+const ProyectosProvider = ({ children }) => {
 
     const [proyectos, setProyectos] = useState([])
     const [alerta, setAlerta] = useState({})
+    const [proyecto, setProyecto] = useState({})
+    const [cargando, setCargando] = useState(true)
+
+    // una vez que el componente este listo, hacemos la consulta a nustra API
+    useEffect(() => {
+        const obtenerProyectos = async () => {
+            try {
+                const token = localStorage.getItem('token') // obtener token
+                if (!token) return // es poco probable que no haya un token pero por las dudas...
+                // esta configuracion tiene que estar en todos los proyectos
+                const config = {
+                    headers: {
+                        "Content-Type": "application/json",
+                        Authorization: `Bearer ${token}`
+                    }
+                }
+                // en el back la funcion es "obtenerProyectos"
+                const { data } = await clienteAxios('/proyectos', config)
+                // console.log(data)
+                setProyectos(data)
+            } catch (error) {
+                console.log(error)
+            }
+        }
+        obtenerProyectos()
+    }, [])
+
 
     const navigate = useNavigate()
 
@@ -23,7 +50,7 @@ const ProyectosProvider = ({children}) => {
     const submitProyecto = async (proyecto) => {
         try {
             const token = localStorage.getItem('token') // obtener token
-            if(!token) return // es poco probable que no haya un token pero por las dudas...
+            if (!token) return // es poco probable que no haya un token pero por las dudas...
             // esta configuracion tiene que estar en todos los proyectos
             const config = {
                 headers: {
@@ -32,9 +59,10 @@ const ProyectosProvider = ({children}) => {
                 }
             }
             // en el back la funcion es "nuevoProyecto"
-            const {data} = await clienteAxios.post('/proyectos', proyecto, config)
-            console.log(data)
-            console.table(data)
+            const { data } = await clienteAxios.post('/proyectos', proyecto, config)
+
+            // para mostrar el ultimo proyecto se escribe lo siguiente..
+            setProyectos([...proyectos, data])
 
             setAlerta({
                 msg: 'Proyecto creado correctamente',
@@ -46,7 +74,29 @@ const ProyectosProvider = ({children}) => {
                 navigate('/proyectos')
             }, 3000);
         } catch (error) {
-            console.log(error)
+            console.error(error)
+        }
+    }
+    // interactua con nuestra API
+    const obtenerProyecto = async (id) => {
+        try {
+            setCargando(true)
+            const token = localStorage.getItem('token') // obtener token
+            if (!token) return // es poco probable que no haya un token pero por las dudas...
+            // esta configuracion tiene que estar en todos los proyectos
+            const config = {
+                headers: {
+                    "Content-Type": "application/json",
+                    Authorization: `Bearer ${token}`
+                }
+            }
+            // en el back la funcion es "obtenerProyecto"
+            const { data } = await clienteAxios(`/proyectos/${id}`, config)
+            setProyecto(data)
+        } catch (error) {
+            console.error(error)
+        } finally {
+            setCargando(false)
         }
     }
 
@@ -56,7 +106,10 @@ const ProyectosProvider = ({children}) => {
                 proyectos,
                 mostrarAlerta,
                 alerta,
-                submitProyecto
+                submitProyecto,
+                obtenerProyecto,
+                proyecto,
+                cargando
             }}
         >
             {children}
