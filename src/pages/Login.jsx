@@ -12,6 +12,8 @@ const Login = () => {
 
   const {setAuth} = useAuth()
 
+  const navigate = useNavigate()
+
   const handleSubmit = async (e) => {
     e.preventDefault()
     if ([email, password].includes('')) {
@@ -30,6 +32,7 @@ const Login = () => {
       localStorage.setItem('token', data.token)
       // usamos el hook
       setAuth(data)
+      navigate('/proyectos')
     } catch (error) {
       setAlerta({
         msg: error.response.data.msg,
