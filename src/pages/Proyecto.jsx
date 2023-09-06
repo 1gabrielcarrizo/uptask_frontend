@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from 'react'
+import React, { useEffect } from 'react'
 import { Link, useParams } from 'react-router-dom'
 import useProyectos from '../hooks/useProyectos'
 import ModalFormularioTarea from '../components/ModalFormularioTarea'
@@ -9,9 +9,7 @@ const Proyecto = () => {
     const { id } = useParams() // obtenemos el "id" de la URL
     const { obtenerProyecto, proyecto, cargando, handleModalTarea } = useProyectos()
     // console.log(proyecto)
-
-    // const [modal, setModal] = useState(false)
-
+    
     useEffect(() => {
         obtenerProyecto(id)
     }, [])

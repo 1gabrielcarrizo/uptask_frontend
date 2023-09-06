@@ -8,33 +8,51 @@ const PRIORIDAD = ['Baja', 'Media', 'Alta']
 
 const ModalFormularioTarea = () => {
 
+    const [id, setId] = useState('')
     const [nombre, setNombre] = useState('')
     const [descripcion, setDescripcion] = useState('')
     const [fechaEntrega, setFechaEntrega] = useState('')
     const [prioridad, setPrioridad] = useState('')
-// extraemos el id del proyecto de la URL porque en el modelo de tareas se lo necesita
+    // extraemos el id del proyecto de la URL porque en el modelo de tareas se lo necesita
     const params = useParams()
 
-    const { modalFormularioTarea, handleModalTarea, mostrarAlerta, alerta, submitTarea } = useProyectos()
+    const { modalFormularioTarea, handleModalTarea, mostrarAlerta, alerta, submitTarea, tarea } = useProyectos()
+
+    useEffect(() => {
+        if(tarea?._id){
+            setId(tarea._id)
+            setNombre(tarea.nombre)
+            setDescripcion(tarea.descripcion)
+            setFechaEntrega(tarea.fechaEntrega?.split('T')[0])
+            setPrioridad(tarea.prioridad)
+            return
+        }
+        setId('')
+        setNombre('')
+        setDescripcion('')
+        setFechaEntrega('')
+        setPrioridad('')
+    }, [tarea])
 
     const handleSubmit = async (e) => {
         e.preventDefault()
-        if([nombre, descripcion, fechaEntrega, prioridad].includes('')){
+        if ([nombre, descripcion, fechaEntrega, prioridad].includes('')) {
             mostrarAlerta({
                 msg: "Todos los campos son obligatorios",
                 error: true
             })
             return
         }
-        await submitTarea({nombre, descripcion, fechaEntrega, prioridad, proyecto: params.id})
+        await submitTarea({id, nombre, descripcion, fechaEntrega, prioridad, proyecto: params.id })
 
+        setId('')
         setNombre('')
         setDescripcion('')
         setFechaEntrega('')
         setPrioridad('')
     }
 
-    const {msg} = alerta
+    const { msg } = alerta
 
     return (
         <Transition.Root show={modalFormularioTarea} as={Fragment}>
@@ -88,14 +106,14 @@ const ModalFormularioTarea = () => {
                             <div className="sm:flex sm:items-start">
                                 <div className="mt-3 text-center sm:mt-0 sm:ml-4 sm:text-left w-full">
                                     <Dialog.Title as="h3" className="text-lg leading-6 font-bold text-gray-900">
-                                        Crear Tarea
+                                        {id ? 'Editar Tarea' : 'Crear Tarea'}
                                     </Dialog.Title>
 
-                                    {msg && <Alerta alerta={alerta}/>}
+                                    {msg && <Alerta alerta={alerta} />}
 
                                     <form
-                                    onSubmit={handleSubmit}
-                                    className='my-10'>
+                                        onSubmit={handleSubmit}
+                                        className='my-10'>
 
                                         <div className='mb-5'>
                                             <label
@@ -161,9 +179,9 @@ const ModalFormularioTarea = () => {
                                         </div>
 
                                         <input
-                                        className='bg-sky-600 hover:bg-sky-700 w-full p-3 text-white uppercase font-bold cursor-pointer transition-colors rounded text-sm'
-                                        type="submit"
-                                        value="Crear Tarea" />
+                                            className='bg-sky-600 hover:bg-sky-700 w-full p-3 text-white uppercase font-bold cursor-pointer transition-colors rounded text-sm'
+                                            type="submit"
+                                            value={id ? 'Guardar Cambios' : 'Crear Tarea'} />
                                     </form>
                                 </div>
                             </div>

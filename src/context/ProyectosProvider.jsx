@@ -11,6 +11,7 @@ const ProyectosProvider = ({ children }) => {
     const [proyecto, setProyecto] = useState({})
     const [cargando, setCargando] = useState(true)
     const [modalFormularioTarea, setModalFormularioTarea] = useState(false)
+    const [tarea, setTarea] = useState(false)
 
     // una vez que el componente este listo, hacemos la consulta a nustra API
     useEffect(() => {
@@ -176,9 +177,19 @@ const ProyectosProvider = ({ children }) => {
     // modal
     const handleModalTarea = () => {
         setModalFormularioTarea(!modalFormularioTarea)
+        setTarea({})
     }
     // interactua con nuestra API
     const submitTarea = async (tarea) => {
+
+        if(tarea?.id){
+            await editarTarea(tarea)
+        }else{
+            await crearTarea(tarea)
+        }
+    }
+    // 
+    const crearTarea = async (tarea) => {
         try {
             const token = localStorage.getItem('token') // obtener token
             if (!token) return // es poco probable que no haya un token pero por las dudas...
@@ -202,6 +213,36 @@ const ProyectosProvider = ({ children }) => {
             console.error(error)
         }
     }
+    //
+    const editarTarea = async (tarea) => {
+        try {
+            const token = localStorage.getItem('token') // obtener token
+            if (!token) return // es poco probable que no haya un token pero por las dudas...
+            // esta configuracion tiene que estar en todos los proyectos
+            const config = {
+                headers: {
+                    "Content-Type": "application/json",
+                    Authorization: `Bearer ${token}`
+                }
+            }
+            // en el backend es la funcion "actualizarTarea"
+            const {data} = await clienteAxios.put(`/tareas/${tarea.id}`, tarea, config)
+            console.log(data)
+            // todo actualizar el DOM
+            const proyectoActualizado = {...proyecto}
+            proyectoActualizado.tareas = proyectoActualizado.tareas.map((tareaState) => tareaState._id === data._id ? data : tareaState)
+            setProyecto(proyectoActualizado)
+            setAlerta({})
+            setModalFormularioTarea(false)
+        } catch (error) {
+            console.error(error)
+        }
+    }
+    // 
+    const handleModalEditarTarea = (tarea) => {
+        setTarea(tarea)
+        setModalFormularioTarea(true)
+    }
 
     return (
         <ProyectosContext.Provider
@@ -216,7 +257,9 @@ const ProyectosProvider = ({ children }) => {
                 eliminarProyecto,
                 modalFormularioTarea,
                 handleModalTarea,
-                submitTarea
+                submitTarea,
+                handleModalEditarTarea,
+                tarea
             }}
         >
             {children}
