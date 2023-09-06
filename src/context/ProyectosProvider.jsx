@@ -48,6 +48,48 @@ const ProyectosProvider = ({ children }) => {
 
     // interactua con nuestra API
     const submitProyecto = async (proyecto) => {
+        // console.log("Desde la funcion submitProyecto")
+        // console.log("Tiene id el proyecto")    
+        if(proyecto.id){
+            await editarProyecto(proyecto)
+        }else{
+            await nuevoProyecto(proyecto)
+        }
+    }
+
+    const editarProyecto = async (proyecto) => {
+        try {
+            const token = localStorage.getItem('token') // obtener token
+            if (!token) return // es poco probable que no haya un token pero por las dudas...
+            // esta configuracion tiene que estar en todos los proyectos
+            const config = {
+                headers: {
+                    "Content-Type": "application/json",
+                    Authorization: `Bearer ${token}`
+                }
+            }
+            // en el back la funcion es "editarProyecto"
+            const { data } = await clienteAxios.put(`/proyectos/${proyecto.id}`, proyecto, config)
+            console.log(data)
+            // sincronizar el state
+            const proyectosActualizados = proyectos.map((proyectoState) => proyectoState._id === data._id ? data : proyectoState)
+            setProyectos(proyectosActualizados)
+            // mostrar alerta
+            setAlerta({
+                msg: 'Proyecto actualizado correctamente',
+                error: false
+            })
+            // luego de actualizar el proyecto, eliminar la alerta y redirigir a "/proyectos"
+            setTimeout(() => {
+                setAlerta({})
+                navigate('/proyectos')
+            }, 3000);
+        } catch (error) {
+            console.error(error)
+        }
+    }
+    
+    const nuevoProyecto = async (proyecto) => {
         try {
             const token = localStorage.getItem('token') // obtener token
             if (!token) return // es poco probable que no haya un token pero por las dudas...

@@ -15,6 +15,7 @@ import NuevoProyecto from './pages/NuevoProyecto'
 import { AuthProvider } from './context/AuthProvider'
 import { ProyectosProvider } from './context/ProyectosProvider'
 import Proyecto from './pages/Proyecto'
+import EditarProyecto from './pages/EditarProyecto'
 
 const App = () => {
   return (
@@ -30,11 +31,12 @@ const App = () => {
               <Route path='olvide-password/:token' element={<NuevoPassword />} />
               <Route path='confirmar/:id' element={<ConfirmarCuenta />} />
             </Route>
-            {/* Area privada */}
+            {/* Area privada - todas tendran "/proyectos" */}
             <Route path='/proyectos' element={<RutaProtegida />}>
               <Route index element={<Proyectos />} />
               <Route path='crear-proyecto' element={<NuevoProyecto />} />
               <Route path=':id' element={<Proyecto/>} />
+              <Route path='editar/:id' element={<EditarProyecto/>} />
             </Route>
           </Routes>
         </ProyectosProvider>
