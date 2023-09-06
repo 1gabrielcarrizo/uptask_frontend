@@ -56,7 +56,7 @@ const ProyectosProvider = ({ children }) => {
             await nuevoProyecto(proyecto)
         }
     }
-
+    // interactua con nuestra API
     const editarProyecto = async (proyecto) => {
         try {
             const token = localStorage.getItem('token') // obtener token
@@ -88,7 +88,7 @@ const ProyectosProvider = ({ children }) => {
             console.error(error)
         }
     }
-    
+    // interactua con nuestra API
     const nuevoProyecto = async (proyecto) => {
         try {
             const token = localStorage.getItem('token') // obtener token
@@ -141,6 +141,37 @@ const ProyectosProvider = ({ children }) => {
             setCargando(false)
         }
     }
+    // interactua con nuestra API
+    const eliminarProyecto = async (id) => {
+        try {
+            const token = localStorage.getItem('token') // obtener token
+            if (!token) return // es poco probable que no haya un token pero por las dudas...
+            // esta configuracion tiene que estar en todos los proyectos
+            const config = {
+                headers: {
+                    "Content-Type": "application/json",
+                    Authorization: `Bearer ${token}`
+                }
+            }
+            // en el back la funcion es "eliminarProyecto"
+            const { data } = await clienteAxios.delete(`/proyectos/${id}`, config)
+            // sincronizar el state
+            const proyectosActualizados = proyectos.filter((proyectoState => proyectoState._id !== id))
+            setProyectos(proyectosActualizados)
+
+            setAlerta({
+                msg: data.msg,
+                error: false
+            })
+            // luego de eliminar el proyecto, eliminar la alerta y redirigir a "/proyectos"
+            setTimeout(() => {
+                setAlerta({})
+                navigate('/proyectos')
+            }, 3000);
+        } catch (error) {
+            console.error(error)
+        }
+    }
 
     return (
         <ProyectosContext.Provider
@@ -151,7 +182,8 @@ const ProyectosProvider = ({ children }) => {
                 submitProyecto,
                 obtenerProyecto,
                 proyecto,
-                cargando
+                cargando,
+                eliminarProyecto
             }}
         >
             {children}
