@@ -191,8 +191,13 @@ const ProyectosProvider = ({ children }) => {
             }
             // en el backend es la funcion "agregarTarea"
             const {data} = await clienteAxios.post('/tareas', tarea, config)
-            console.log(data)
-            console.table(data)
+            // console.log(data)
+            // agregar la tarea al state
+            const proyectoActualizado = {...proyecto}
+            proyectoActualizado.tareas = [...proyecto.tareas, data]
+            setProyecto(proyectoActualizado)
+            setAlerta({})
+            setModalFormularioTarea(false)
         } catch (error) {
             console.error(error)
         }
