@@ -10,6 +10,7 @@ const ProyectosProvider = ({ children }) => {
     const [alerta, setAlerta] = useState({})
     const [proyecto, setProyecto] = useState({})
     const [cargando, setCargando] = useState(true)
+    const [modalFormularioTarea, setModalFormularioTarea] = useState(false)
 
     // una vez que el componente este listo, hacemos la consulta a nustra API
     useEffect(() => {
@@ -172,6 +173,30 @@ const ProyectosProvider = ({ children }) => {
             console.error(error)
         }
     }
+    // modal
+    const handleModalTarea = () => {
+        setModalFormularioTarea(!modalFormularioTarea)
+    }
+    // interactua con nuestra API
+    const submitTarea = async (tarea) => {
+        try {
+            const token = localStorage.getItem('token') // obtener token
+            if (!token) return // es poco probable que no haya un token pero por las dudas...
+            // esta configuracion tiene que estar en todos los proyectos
+            const config = {
+                headers: {
+                    "Content-Type": "application/json",
+                    Authorization: `Bearer ${token}`
+                }
+            }
+            // en el backend es la funcion "agregarTarea"
+            const {data} = await clienteAxios.post('/tareas', tarea, config)
+            console.log(data)
+            console.table(data)
+        } catch (error) {
+            console.error(error)
+        }
+    }
 
     return (
         <ProyectosContext.Provider
@@ -183,7 +208,10 @@ const ProyectosProvider = ({ children }) => {
                 obtenerProyecto,
                 proyecto,
                 cargando,
-                eliminarProyecto
+                eliminarProyecto,
+                modalFormularioTarea,
+                handleModalTarea,
+                submitTarea
             }}
         >
             {children}

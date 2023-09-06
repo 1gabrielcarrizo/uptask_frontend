@@ -6,10 +6,10 @@ import ModalFormularioTarea from '../components/ModalFormularioTarea'
 const Proyecto = () => {
 
     const { id } = useParams() // obtenemos el "id" de la URL
-    const { obtenerProyecto, proyecto, cargando } = useProyectos()
+    const { obtenerProyecto, proyecto, cargando, handleModalTarea } = useProyectos()
     // console.log(proyecto)
 
-    const [modal, setModal] = useState(false)
+    // const [modal, setModal] = useState(false)
 
     useEffect(() => {
         obtenerProyecto(id)
@@ -35,7 +35,7 @@ const Proyecto = () => {
             </div>
 
             <button
-            onClick={() => setModal(true)}
+            onClick={handleModalTarea}
                 className='text-sm px-5 py-3 w-full md:w-auto rounded-lg uppercase font-bold bg-sky-400 text-white text-center mt-5 flex gap-2 items-center justify-center'
                 type="button">
                 <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="currentColor" className="w-6 h-6">
@@ -44,9 +44,7 @@ const Proyecto = () => {
                 Nueva Tarea
             </button>
 
-            <ModalFormularioTarea
-            modal={modal}
-            setModal={setModal}/>
+            <ModalFormularioTarea/>
         </>
     )
 }
