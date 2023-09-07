@@ -280,6 +280,10 @@ const ProyectosProvider = ({ children }) => {
             console.error(error)
         }
     }
+    // interactua con nuestra API
+    const submitColaborador = async (email) => {
+        console.log(email)
+    }
 
     return (
         <ProyectosContext.Provider
@@ -299,7 +303,8 @@ const ProyectosProvider = ({ children }) => {
                 tarea,
                 modalEliminarTarea,
                 handleModalEliminarTarea,
-                eliminarTarea
+                eliminarTarea,
+                submitColaborador
             }}
         >
             {children}
