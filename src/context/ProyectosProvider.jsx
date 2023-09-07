@@ -141,6 +141,7 @@ const ProyectosProvider = ({ children }) => {
             // en el back la funcion es "obtenerProyecto"
             const { data } = await clienteAxios(`/proyectos/${id}`, config)
             setProyecto(data)
+            setAlerta({})
         } catch (error) {
             setAlerta({
                 msg: error.response.data.msg,
@@ -329,7 +330,11 @@ const ProyectosProvider = ({ children }) => {
                 error: false
             })
             setColaborador({})
-            // setAlerta({})
+
+            setTimeout(() => {
+                setAlerta({})
+            }, 3000);
+
         } catch (error) {
             setAlerta({
                 msg: error.response.data.msg,
@@ -364,6 +369,11 @@ const ProyectosProvider = ({ children }) => {
             })
             setColaborador({})
             setModalEliminarColaborador(false)
+
+            setTimeout(() => {
+                setAlerta({})
+            }, 3000);
+
         } catch (error) {
             console.error(error)
         }
