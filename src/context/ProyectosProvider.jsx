@@ -12,6 +12,7 @@ const ProyectosProvider = ({ children }) => {
     const [cargando, setCargando] = useState(true)
     const [modalFormularioTarea, setModalFormularioTarea] = useState(false)
     const [tarea, setTarea] = useState(false)
+    const [modalEliminarTarea, setModalEliminarTarea] = useState(false)
 
     // una vez que el componente este listo, hacemos la consulta a nustra API
     useEffect(() => {
@@ -243,6 +244,42 @@ const ProyectosProvider = ({ children }) => {
         setTarea(tarea)
         setModalFormularioTarea(true)
     }
+    // 
+    const handleModalEliminarTarea = (tarea) => {
+        setTarea(tarea)
+        setModalEliminarTarea(!modalEliminarTarea)
+    }
+    // interactua con nuestra API
+    const eliminarTarea = async () => {
+        try {
+            const token = localStorage.getItem('token') // obtener token
+            if (!token) return // es poco probable que no haya un token pero por las dudas...
+            // esta configuracion tiene que estar en todos los proyectos
+            const config = {
+                headers: {
+                    "Content-Type": "application/json",
+                    Authorization: `Bearer ${token}`
+                }
+            }
+            // en el backend es la funcion "actualizarTarea"
+            const {data} = await clienteAxios.delete(`/tareas/${tarea._id}`, config)
+            setAlerta({
+                msg: data.msg,
+                error: false
+            })
+            // todo actualizar el DOM
+            const proyectoActualizado = {...proyecto}
+            proyectoActualizado.tareas = proyectoActualizado.tareas.filter((tareaState) => tareaState._id !== tarea._id)
+            setProyecto(proyectoActualizado)
+            setModalEliminarTarea(false)
+            setTarea({})
+            setTimeout(() => {
+                setAlerta({})
+            }, 3000);
+        } catch (error) {
+            console.error(error)
+        }
+    }
 
     return (
         <ProyectosContext.Provider
@@ -259,7 +296,10 @@ const ProyectosProvider = ({ children }) => {
                 handleModalTarea,
                 submitTarea,
                 handleModalEditarTarea,
-                tarea
+                tarea,
+                modalEliminarTarea,
+                handleModalEliminarTarea,
+                eliminarTarea
             }}
         >
             {children}
