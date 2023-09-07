@@ -378,6 +378,30 @@ const ProyectosProvider = ({ children }) => {
             console.error(error)
         }
     }
+    // interactua con nuestra API
+    const completarTarea = async (id) => {
+        try {
+            const token = localStorage.getItem('token') // obtener token
+            if (!token) return // es poco probable que no haya un token pero por las dudas...
+            // esta configuracion tiene que estar en todos los proyectos
+            const config = {
+                headers: {
+                    "Content-Type": "application/json",
+                    Authorization: `Bearer ${token}`
+                }
+            }
+            const {data} = await clienteAxios.post(`/tareas/estado/${id}`, {}, config) 
+            
+            const proyectoActualizado = {...proyecto}
+            proyectoActualizado.tareas = proyectoActualizado.tareas.map((tareaState) => tareaState._id === data._id ? data : tareaState)
+
+            setProyecto(proyectoActualizado)
+            setTarea({})
+            setAlerta({})
+        } catch (error) {
+            console.error(error)
+        }
+    }
 
     return (
         <ProyectosContext.Provider
@@ -403,7 +427,8 @@ const ProyectosProvider = ({ children }) => {
                 agregarColaborador,
                 handleModalEliminarColaborador,
                 modalEliminarColaborador,
-                eliminarColaborador
+                eliminarColaborador,
+                completarTarea
             }}
         >
             {children}
