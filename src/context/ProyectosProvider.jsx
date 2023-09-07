@@ -13,6 +13,7 @@ const ProyectosProvider = ({ children }) => {
     const [modalFormularioTarea, setModalFormularioTarea] = useState(false)
     const [tarea, setTarea] = useState(false)
     const [modalEliminarTarea, setModalEliminarTarea] = useState(false)
+    const [colaborador, setColaborador] = useState({})
 
     // una vez que el componente este listo, hacemos la consulta a nustra API
     useEffect(() => {
@@ -53,9 +54,9 @@ const ProyectosProvider = ({ children }) => {
     const submitProyecto = async (proyecto) => {
         // console.log("Desde la funcion submitProyecto")
         // console.log("Tiene id el proyecto")    
-        if(proyecto.id){
+        if (proyecto.id) {
             await editarProyecto(proyecto)
-        }else{
+        } else {
             await nuevoProyecto(proyecto)
         }
     }
@@ -139,7 +140,10 @@ const ProyectosProvider = ({ children }) => {
             const { data } = await clienteAxios(`/proyectos/${id}`, config)
             setProyecto(data)
         } catch (error) {
-            console.error(error)
+            setAlerta({
+                msg: error.response.data.msg,
+                error: true
+            })
         } finally {
             setCargando(false)
         }
@@ -183,9 +187,9 @@ const ProyectosProvider = ({ children }) => {
     // interactua con nuestra API
     const submitTarea = async (tarea) => {
 
-        if(tarea?.id){
+        if (tarea?.id) {
             await editarTarea(tarea)
-        }else{
+        } else {
             await crearTarea(tarea)
         }
     }
@@ -202,10 +206,10 @@ const ProyectosProvider = ({ children }) => {
                 }
             }
             // en el backend es la funcion "agregarTarea"
-            const {data} = await clienteAxios.post('/tareas', tarea, config)
+            const { data } = await clienteAxios.post('/tareas', tarea, config)
             // console.log(data)
             // agregar la tarea al state
-            const proyectoActualizado = {...proyecto}
+            const proyectoActualizado = { ...proyecto }
             proyectoActualizado.tareas = [...proyecto.tareas, data]
             setProyecto(proyectoActualizado)
             setAlerta({})
@@ -227,10 +231,10 @@ const ProyectosProvider = ({ children }) => {
                 }
             }
             // en el backend es la funcion "actualizarTarea"
-            const {data} = await clienteAxios.put(`/tareas/${tarea.id}`, tarea, config)
+            const { data } = await clienteAxios.put(`/tareas/${tarea.id}`, tarea, config)
             console.log(data)
             // todo actualizar el DOM
-            const proyectoActualizado = {...proyecto}
+            const proyectoActualizado = { ...proyecto }
             proyectoActualizado.tareas = proyectoActualizado.tareas.map((tareaState) => tareaState._id === data._id ? data : tareaState)
             setProyecto(proyectoActualizado)
             setAlerta({})
@@ -262,13 +266,13 @@ const ProyectosProvider = ({ children }) => {
                 }
             }
             // en el backend es la funcion "actualizarTarea"
-            const {data} = await clienteAxios.delete(`/tareas/${tarea._id}`, config)
+            const { data } = await clienteAxios.delete(`/tareas/${tarea._id}`, config)
             setAlerta({
                 msg: data.msg,
                 error: false
             })
             // todo actualizar el DOM
-            const proyectoActualizado = {...proyecto}
+            const proyectoActualizado = { ...proyecto }
             proyectoActualizado.tareas = proyectoActualizado.tareas.filter((tareaState) => tareaState._id !== tarea._id)
             setProyecto(proyectoActualizado)
             setModalEliminarTarea(false)
@@ -282,7 +286,54 @@ const ProyectosProvider = ({ children }) => {
     }
     // interactua con nuestra API
     const submitColaborador = async (email) => {
-        console.log(email)
+        setCargando(true)
+        try {
+            const token = localStorage.getItem('token') // obtener token
+            if (!token) return // es poco probable que no haya un token pero por las dudas...
+            // esta configuracion tiene que estar en todos los proyectos
+            const config = {
+                headers: {
+                    "Content-Type": "application/json",
+                    Authorization: `Bearer ${token}`
+                }
+            }
+            const { data } = await clienteAxios.post('/proyectos/colaboradores', { email }, config)
+            setColaborador(data)
+            setAlerta({})
+        } catch (error) {
+            setAlerta({
+                msg: error.response.data.msg,
+                error: true
+            })
+        } finally {
+            setCargando(false)
+        }
+    }
+    // 
+    const agregarColaborador = async (email) => {
+        try {
+            const token = localStorage.getItem('token') // obtener token
+            if (!token) return // es poco probable que no haya un token pero por las dudas...
+            // esta configuracion tiene que estar en todos los proyectos
+            const config = {
+                headers: {
+                    "Content-Type": "application/json",
+                    Authorization: `Bearer ${token}`
+                }
+            }
+            const { data } = await clienteAxios.post(`/proyectos/colaboradores/${proyecto._id}`, email, config)
+            setAlerta({
+                msg: data.msg,
+                error: false
+            })
+            setColaborador({})
+            setAlerta({})
+        } catch (error) {
+            setAlerta({
+                msg: error.response.data.msg,
+                error: true
+            })
+        }
     }
 
     return (
@@ -304,7 +355,9 @@ const ProyectosProvider = ({ children }) => {
                 modalEliminarTarea,
                 handleModalEliminarTarea,
                 eliminarTarea,
-                submitColaborador
+                submitColaborador,
+                colaborador,
+                agregarColaborador
             }}
         >
             {children}
