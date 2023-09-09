@@ -1,5 +1,4 @@
-export const formatearFecha = (fecha) => {
-
+export const formatearFecha = fecha => {
     const nuevaFecha = new Date(fecha.split('T')[0].split('-'))
     const opciones = {
         weekday: 'long',
