@@ -14,6 +14,8 @@ const Proyectos = () => {
   useEffect(() => {
     // "io" se conecta con la URL del backend
     socket = io(import.meta.env.VITE_BACKEND_URL)
+    // "emit" crea un evento, le damos un nombre al evento, por ejemplo "prueba", como segundo valor podemos pasarle un nombre
+    socket.emit('prueba', proyectos)
   }, [])
   
   
