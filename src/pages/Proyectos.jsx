@@ -1,12 +1,21 @@
-import React from 'react'
+import React, { useEffect } from 'react'
 import useProyectos from '../hooks/useProyectos'
 import PreviewProyecto from '../components/PreviewProyecto'
 import Alerta from '../components/Alerta'
+import io from 'socket.io-client'
 
+// se va a ir llenando segun se ejecute el codigo
+let socket
 
 const Proyectos = () => {
   
   const { proyectos, alerta } = useProyectos()
+
+  useEffect(() => {
+    // "io" se conecta con la URL del backend
+    socket = io(import.meta.env.VITE_BACKEND_URL)
+  }, [])
+  
   
   const {msg} = alerta
 
