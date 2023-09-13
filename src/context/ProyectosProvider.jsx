@@ -15,7 +15,7 @@ const ProyectosProvider = ({ children }) => {
     const [modalEliminarTarea, setModalEliminarTarea] = useState(false)
     const [colaborador, setColaborador] = useState({})
     const [modalEliminarColaborador, setModalEliminarColaborador] = useState(false)
-    // const [Colaborador, setColaborador] = useState(second)
+    const [buscador, setBuscador] = useState(false)
 
     // una vez que el componente este listo, hacemos la consulta a nustra API
     useEffect(() => {
@@ -407,6 +407,10 @@ const ProyectosProvider = ({ children }) => {
             console.error(error)
         }
     }
+    // buscador de proyectos
+    const handleBuscador = () => {
+        setBuscador(!buscador)
+    }
 
     return (
         <ProyectosContext.Provider
@@ -433,7 +437,9 @@ const ProyectosProvider = ({ children }) => {
                 handleModalEliminarColaborador,
                 modalEliminarColaborador,
                 eliminarColaborador,
-                completarTarea
+                completarTarea,
+                buscador,
+                handleBuscador
             }}
         >
             {children}
