@@ -15,7 +15,6 @@ const Proyecto = () => {
     const { obtenerProyecto, proyecto, cargando, handleModalTarea, alerta } = useProyectos()
 
     const admin = useAdmin()
-    // console.log(admin)
 
     useEffect(() => {
         obtenerProyecto(id)
@@ -23,7 +22,7 @@ const Proyecto = () => {
 
     const { nombre } = proyecto
 
-    // console.log(proyecto)
+    console.log(proyecto)
 
     if (cargando) return 'Cargando...'
 
