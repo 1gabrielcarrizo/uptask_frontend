@@ -8,21 +8,36 @@ import Alerta from '../components/Alerta'
 import Colaborador from '../components/Colaborador'
 import ModalEliminarColaborador from '../components/ModalEliminarColaborador'
 import useAdmin from '../hooks/useAdmin'
+import io from 'socket.io-client'
+
+let socket
 
 const Proyecto = () => {
 
-    const { id } = useParams() // obtenemos el "id" de la URL
+    const params = useParams() // obtenemos el "id" de la URL
     const { obtenerProyecto, proyecto, cargando, handleModalTarea, alerta } = useProyectos()
 
     const admin = useAdmin()
 
     useEffect(() => {
-        obtenerProyecto(id)
+        obtenerProyecto(params.id)
     }, [])
+    // useEffect para conectarse al socket.io
+    useEffect(() => {
+        socket = io(import.meta.env.VITE_BACKEND_URL)
+        // en que proyecto esta el usuario actualmente
+        socket.emit('abrir proyecto', params.id)
+    }, [])
+    // enviar mensaje a los usuarios
+    useEffect(() => {
+      socket.on('respuesta', (persona) => {
+        console.log(persona)
+      })
+    })
+    
+
 
     const { nombre } = proyecto
-
-    console.log(proyecto)
 
     if (cargando) return 'Cargando...'
 
@@ -40,7 +55,7 @@ const Proyecto = () => {
                         </svg>
                         <Link
                             className='uppercase font-bold'
-                            to={`/proyectos/editar/${id}`}
+                            to={`/proyectos/editar/${params.id}`}
                         >Editar</Link>
                     </div>
                 )}

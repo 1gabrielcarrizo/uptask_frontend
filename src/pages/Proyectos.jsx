@@ -2,28 +2,12 @@ import React, { useEffect } from 'react'
 import useProyectos from '../hooks/useProyectos'
 import PreviewProyecto from '../components/PreviewProyecto'
 import Alerta from '../components/Alerta'
-// import io from 'socket.io-client'
 
-// se va a ir llenando segun se ejecute el codigo
-// let socket
 
 const Proyectos = () => {
   
   const { proyectos, alerta } = useProyectos()
 
-  /*
-  useEffect(() => {
-    // "io" se conecta con la URL del backend
-    socket = io(import.meta.env.VITE_BACKEND_URL)
-    // "emit" crea un evento, le damos un nombre al evento, por ejemplo "prueba", como segundo valor podemos pasarle un nombre
-    socket.emit('prueba', proyectos)
-    // recibimos la respuesta del back
-    socket.on('respuesta', (persona) => {
-      console.log('Desde el frontend', persona)
-    })
-  }) // al usar socket.io es mejor no usar "[]" en el useEffect, para que no se ejecute una vez
-  */
-  
   const {msg} = alerta
 
   return (

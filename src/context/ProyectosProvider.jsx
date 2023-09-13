@@ -32,7 +32,6 @@ const ProyectosProvider = ({ children }) => {
                 }
                 // en el back la funcion es "obtenerProyectos"
                 const { data } = await clienteAxios('/proyectos', config)
-                // console.log(data)
                 setProyectos(data)
             } catch (error) {
                 console.log(error)
@@ -76,7 +75,6 @@ const ProyectosProvider = ({ children }) => {
             }
             // en el back la funcion es "editarProyecto"
             const { data } = await clienteAxios.put(`/proyectos/${proyecto.id}`, proyecto, config)
-            console.log(data)
             // sincronizar el state
             const proyectosActualizados = proyectos.map((proyectoState) => proyectoState._id === data._id ? data : proyectoState)
             setProyectos(proyectosActualizados)
@@ -215,7 +213,6 @@ const ProyectosProvider = ({ children }) => {
             }
             // en el backend es la funcion "agregarTarea"
             const { data } = await clienteAxios.post('/tareas', tarea, config)
-            // console.log(data)
             // agregar la tarea al state
             const proyectoActualizado = { ...proyecto }
             proyectoActualizado.tareas = [...proyecto.tareas, data]
@@ -240,7 +237,6 @@ const ProyectosProvider = ({ children }) => {
             }
             // en el backend es la funcion "actualizarTarea"
             const { data } = await clienteAxios.put(`/tareas/${tarea.id}`, tarea, config)
-            console.log(data)
             // todo actualizar el DOM
             const proyectoActualizado = { ...proyecto }
             proyectoActualizado.tareas = proyectoActualizado.tareas.map((tareaState) => tareaState._id === data._id ? data : tareaState)
