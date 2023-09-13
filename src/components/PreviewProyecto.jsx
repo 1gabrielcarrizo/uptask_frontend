@@ -7,7 +7,7 @@ const PreviewProyecto = ({ proyecto }) => {
     // para diferenciar en donde somos colaboradores, extraemos "creador" de proyecto
     const { nombre, _id, cliente, creador } = proyecto
     return (
-        <div className='border-b p-5 flex justify-between'>
+        <div className='border-b p-5 flex flex-col md:flex-row justify-between'>
             <div className='flex items-center gap-2'>
             {/* el nombre ocupara todo el ancho disponible con "flex-1" */}
             <p className='flex-1'>
