@@ -2,6 +2,7 @@ import React, { createContext, useEffect, useState } from 'react'
 import clienteAxios from '../config/clienteAxios'
 import { useNavigate } from 'react-router-dom'
 import io from 'socket.io-client'
+import useAuth from '../hooks/useAuth'
 
 let socket
 
@@ -21,6 +22,8 @@ const ProyectosProvider = ({ children }) => {
     const [buscador, setBuscador] = useState(false)
 
     const navigate = useNavigate()
+    // "auth" tiene la informacion de autenticacion del usuario
+    const {auth} = useAuth()
 
     // una vez que el componente este listo, hacemos la consulta a nustra API
     useEffect(() => {
@@ -43,7 +46,7 @@ const ProyectosProvider = ({ children }) => {
             }
         }
         obtenerProyectos()
-    }, [])
+    }, [auth])
 
     // conexion con socket io
     useEffect(() => {
