@@ -15,7 +15,7 @@ let socket
 const Proyecto = () => {
 
     const params = useParams() // obtenemos el "id" de la URL
-    const { obtenerProyecto, proyecto, cargando, handleModalTarea, alerta, submitTareasProyecto, eliminarTareaProyecto } = useProyectos()
+    const { obtenerProyecto, proyecto, cargando, handleModalTarea, alerta, submitTareasProyecto, eliminarTareaProyecto, actualizarTareaProyecto } = useProyectos()
 
     const admin = useAdmin()
 
@@ -40,6 +40,12 @@ const Proyecto = () => {
         socket.on('tarea eliminada', tareaEliminada => {
             if(tareaEliminada.proyecto === proyecto._id){
                 eliminarTareaProyecto(tareaEliminada)
+            }
+        })
+        // poder ver las tareas actualizadas
+        socket.on('tarea actualizada', tareaActualizada => {
+            if(tareaActualizada.proyecto._id === proyecto._id){
+                actualizarTareaProyecto(tareaActualizada)
             }
         })
     })

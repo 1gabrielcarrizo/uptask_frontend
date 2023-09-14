@@ -247,12 +247,13 @@ const ProyectosProvider = ({ children }) => {
             }
             // en el backend es la funcion "actualizarTarea"
             const { data } = await clienteAxios.put(`/tareas/${tarea.id}`, tarea, config)
-            // todo actualizar el DOM
-            const proyectoActualizado = { ...proyecto }
-            proyectoActualizado.tareas = proyectoActualizado.tareas.map((tareaState) => tareaState._id === data._id ? data : tareaState)
-            setProyecto(proyectoActualizado)
+            
             setAlerta({})
             setModalFormularioTarea(false)
+
+            // SOCKET
+            socket.emit('actualizar tarea', data)
+
         } catch (error) {
             console.error(error)
         }
@@ -431,6 +432,13 @@ const ProyectosProvider = ({ children }) => {
         proyectoActualizado.tareas = proyectoActualizado.tareas.filter((tareaState) => tareaState._id !== tarea._id)
         setProyecto(proyectoActualizado)
     }
+    // socket io
+    const actualizarTareaProyecto = (tarea) => {
+        // actualiza el DOM
+        const proyectoActualizado = { ...proyecto }
+        proyectoActualizado.tareas = proyectoActualizado.tareas.map((tareaState) => tareaState._id === tarea._id ? tarea : tareaState)
+        setProyecto(proyectoActualizado)
+    }
 
     return (
         <ProyectosContext.Provider
@@ -461,7 +469,8 @@ const ProyectosProvider = ({ children }) => {
                 buscador,
                 handleBuscador,
                 submitTareasProyecto,
-                eliminarTareaProyecto
+                eliminarTareaProyecto,
+                actualizarTareaProyecto
             }}
         >
             {children}
