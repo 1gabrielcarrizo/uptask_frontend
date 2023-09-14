@@ -1,6 +1,9 @@
 import React, { createContext, useEffect, useState } from 'react'
 import clienteAxios from '../config/clienteAxios'
 import { useNavigate } from 'react-router-dom'
+import io from 'socket.io-client'
+
+let socket
 
 const ProyectosContext = createContext()
 
@@ -16,6 +19,8 @@ const ProyectosProvider = ({ children }) => {
     const [colaborador, setColaborador] = useState({})
     const [modalEliminarColaborador, setModalEliminarColaborador] = useState(false)
     const [buscador, setBuscador] = useState(false)
+
+    const navigate = useNavigate()
 
     // una vez que el componente este listo, hacemos la consulta a nustra API
     useEffect(() => {
@@ -40,8 +45,13 @@ const ProyectosProvider = ({ children }) => {
         obtenerProyectos()
     }, [])
 
+    // conexion con socket io
+    useEffect(() => {
+      socket = io(import.meta.env.VITE_BACKEND_URL)
+    }, [])
+    
 
-    const navigate = useNavigate()
+
 
     const mostrarAlerta = (alerta) => {
         setAlerta(alerta)
@@ -213,12 +223,12 @@ const ProyectosProvider = ({ children }) => {
             }
             // en el backend es la funcion "agregarTarea"
             const { data } = await clienteAxios.post('/tareas', tarea, config)
-            // agregar la tarea al state
-            const proyectoActualizado = { ...proyecto }
-            proyectoActualizado.tareas = [...proyecto.tareas, data]
-            setProyecto(proyectoActualizado)
+
             setAlerta({})
             setModalFormularioTarea(false)
+
+            // SOCKET IO
+            socket.emit('nueva tarea', data)
         } catch (error) {
             console.error(error)
         }
@@ -407,6 +417,13 @@ const ProyectosProvider = ({ children }) => {
     const handleBuscador = () => {
         setBuscador(!buscador)
     }
+    // socket io
+    const submitTareasProyecto = (tarea) => {
+        // agregar la tarea al state
+            const proyectoActualizado = { ...proyecto }
+            proyectoActualizado.tareas = [...proyectoActualizado.tareas, tarea]
+            setProyecto(proyectoActualizado)
+    }
 
     return (
         <ProyectosContext.Provider
@@ -435,7 +452,8 @@ const ProyectosProvider = ({ children }) => {
                 eliminarColaborador,
                 completarTarea,
                 buscador,
-                handleBuscador
+                handleBuscador,
+                submitTareasProyecto
             }}
         >
             {children}
