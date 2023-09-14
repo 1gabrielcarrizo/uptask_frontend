@@ -15,7 +15,7 @@ let socket
 const Proyecto = () => {
 
     const params = useParams() // obtenemos el "id" de la URL
-    const { obtenerProyecto, proyecto, cargando, handleModalTarea, alerta, submitTareasProyecto } = useProyectos()
+    const { obtenerProyecto, proyecto, cargando, handleModalTarea, alerta, submitTareasProyecto, eliminarTareaProyecto } = useProyectos()
 
     const admin = useAdmin()
 
@@ -28,11 +28,18 @@ const Proyecto = () => {
         // en que proyecto esta el usuario actualmente
         socket.emit('abrir proyecto', params.id)
     }, [])
-    // poder ver las tareas agregadas
+    //
     useEffect(() => {
+        // poder ver las tareas agregadas
         socket.on('tarea agregada', tareaNueva => {
             if(tareaNueva.proyecto === proyecto._id){
                 submitTareasProyecto(tareaNueva)
+            }
+        })
+        // poder ver las tareas eliminadas
+        socket.on('tarea eliminada', tareaEliminada => {
+            if(tareaEliminada.proyecto === proyecto._id){
+                eliminarTareaProyecto(tareaEliminada)
             }
         })
     })
