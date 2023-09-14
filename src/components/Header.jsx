@@ -2,10 +2,19 @@ import React from 'react'
 import { Link } from 'react-router-dom'
 import useProyectos from '../hooks/useProyectos'
 import Busqueda from './Busqueda'
+import useAuth from '../hooks/useAuth'
 
 const Header = () => {
 
-  const { handleBuscador } = useProyectos()
+  const { handleBuscador, cerrarSesionProyectos } = useProyectos()
+  const { cerrarSesionAuth } = useAuth()
+
+  // cerrar la sesion del uusario
+  const handleCerrarSesion = () => {
+    cerrarSesionProyectos()
+    cerrarSesionAuth()
+    localStorage.removeItem('token')
+  }
 
   return (
     <header className='px-4 py-5 bg-white border-b'>
@@ -28,6 +37,7 @@ const Header = () => {
           >
             Proyectos</Link>
           <button
+          onClick={handleCerrarSesion}
             type="button"
             className='text-white text-sm bg-sky-600 p-3 rounded-md uppercase font-bold'
           >
