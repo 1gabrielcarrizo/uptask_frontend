@@ -15,7 +15,7 @@ let socket
 const Proyecto = () => {
 
     const params = useParams() // obtenemos el "id" de la URL
-    const { obtenerProyecto, proyecto, cargando, handleModalTarea, alerta, submitTareasProyecto, eliminarTareaProyecto, actualizarTareaProyecto } = useProyectos()
+    const { obtenerProyecto, proyecto, cargando, handleModalTarea, alerta, submitTareasProyecto, eliminarTareaProyecto, actualizarTareaProyecto, cambiarEstadoTarea } = useProyectos()
 
     const admin = useAdmin()
 
@@ -46,6 +46,12 @@ const Proyecto = () => {
         socket.on('tarea actualizada', tareaActualizada => {
             if(tareaActualizada.proyecto._id === proyecto._id){
                 actualizarTareaProyecto(tareaActualizada)
+            }
+        })
+        // poder ver las tareas que se completan
+        socket.on('nuevo estado', nuevoEstadoTarea => {
+            if(nuevoEstadoTarea.proyecto._id === proyecto._id){
+                cambiarEstadoTarea(nuevoEstadoTarea)
             }
         })
     })
