@@ -4,6 +4,13 @@ import clienteAxios from '../config/clienteAxios'
 import Alerta from '../components/Alerta'
 import useAuth from '../hooks/useAuth'
 
+/* 
+bg-gradient-to-r from-indigo-400 to-cyan-400
+bg-gradient-to-r from-cyan-500 to-blue-500 // este color esta lindo
+bg-gradient-to-r from-indigo-500 to-blue-500
+bg-gradient-to-r from-blue-600 to-violet-600
+*/
+
 const Login = () => {
 
   const [email, setEmail] = useState('')
@@ -45,7 +52,7 @@ const Login = () => {
 
   return (
     <>
-      <h1 className='text-sky-600 font-black text-6xl capitalize'>Inicia sesión y administra tus <span className='text-slate-700'>proyectos</span></h1>
+      <h1 className='text-transparent bg-clip-text font-black text-6xl capitalize bg-gradient-to-br from-cyan-500 to-blue-500'>Inicia sesión y administra tus <span className='text-slate-700'>proyectos</span></h1>
 
       {msg && <Alerta alerta={alerta} />}
 
