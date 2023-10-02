@@ -147,7 +147,7 @@ const Registrar = () => {
           className='bg-sky-700 w-full py-3 text-white uppercase font-bold rounded hover:cursor-pointer hover:bg-sky-800 transition-colors mb-5' />
       </form>
 
-      <nav className='lg:flex lg:justify-between'>
+      <nav className='xl:flex xl:justify-between'>
         <Link
           to="/"
           className='block text-center my-5 text-slate-500 uppercase text-sm'>
