@@ -36,7 +36,7 @@ const OlvidePassword = () => {
 
   return (
     <>
-      <h1 className='text-sky-600 font-black text-6xl capitalize'>Recupera tu acceso y no pierdas tus <span className='text-slate-700'>proyectos</span></h1>
+      <h1 className='text-transparent bg-clip-text font-black text-6xl capitalize bg-gradient-to-br from-cyan-500 to-blue-500'>Recupera tu acceso y no pierdas tus <span className='text-slate-700'>proyectos</span></h1>
 
       {msg && <Alerta alerta={alerta}/>}
 
@@ -61,11 +61,11 @@ const OlvidePassword = () => {
 
         <input
           type="submit"
-          value="Crear Cuenta"
+          value="Enviar Email"
           className='bg-sky-700 w-full py-3 text-white uppercase font-bold rounded hover:cursor-pointer hover:bg-sky-800 transition-colors mb-5' />
       </form>
 
-      <nav className='lg:flex lg:justify-between'>
+      <nav className='xl:flex xl:justify-between'>
         
         <Link
           to="/"

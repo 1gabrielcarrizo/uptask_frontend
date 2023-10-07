@@ -58,6 +58,11 @@ const Registrar = () => {
         error: true
       })
     }
+    window.scroll({
+      top: 0,
+      left: 0,
+      behavior: 'smooth'
+    })
   }
 
   // extramemos msg de alerta en caso de que exista
@@ -65,7 +70,7 @@ const Registrar = () => {
 
   return (
     <>
-      <h1 className='text-sky-600 font-black text-6xl capitalize'>Crea tu cuenta y administra tus <span className='text-slate-700'>proyectos</span></h1>
+      <h1 className='text-transparent bg-clip-text font-black text-6xl capitalize bg-gradient-to-br from-cyan-500 to-blue-500'>Crea tu cuenta y administra tus <span className='text-slate-700'>proyectos</span></h1>
 
       {msg && <Alerta alerta={alerta}/>}
 
@@ -147,7 +152,7 @@ const Registrar = () => {
           className='bg-sky-700 w-full py-3 text-white uppercase font-bold rounded hover:cursor-pointer hover:bg-sky-800 transition-colors mb-5' />
       </form>
 
-      <nav className='lg:flex lg:justify-between'>
+      <nav className='xl:flex xl:justify-between'>
         <Link
           to="/"
           className='block text-center my-5 text-slate-500 uppercase text-sm'>

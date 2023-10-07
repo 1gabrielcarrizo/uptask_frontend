@@ -13,7 +13,7 @@ const NuevoColaborador = () => {
         obtenerProyecto(params.id)
     }, [])
 
-    console.log(colaborador)
+    // console.log(colaborador)
 
     // if (cargando) return 'Cargando...'
 
@@ -21,7 +21,7 @@ const NuevoColaborador = () => {
 
     return (
         <>
-            <h1 className='text-4xl font-black'>Añadir Colaborador(a) al Proyecto: {proyecto.nombre}</h1>
+            <h1 className='text-4xl font-black'>Añadir Colaborador(a) al Proyecto: <span className='text-transparent bg-clip-text bg-gradient-to-br from-cyan-500 to-blue-500'>{proyecto.nombre}</span></h1>
 
             <div className='mt-10 flex justify-center'>
                 <FormularioColaborador />

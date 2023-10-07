@@ -14,11 +14,11 @@ const Tarea = ({ tarea }) => {
     return (
         <div className='border-b p-5 flex justify-between items-center'>
             <div className='flex flex-col items-start'>
-                <p className='mb-1 text-xl'>{nombre}</p>
-                <p className='mb-1 text-sm text-gray-500 uppercase'>{descripcion}</p>
-                <p className='mb-1 text-sm'>{formatearFecha(fechaEntrega)}</p>
-                <p className='mb-1 text-gray-600'>Prioridad: {prioridad}</p>
-                {estado && <p className='text-xs bg-green-600 uppercase p-1 rounded-lg text-white'>Completada por: {tarea.completado.nombre}</p>}
+                <p className='mb-1 text-xl'>Nombre: {nombre}</p>
+                <p className='mb-1 text-sm text-gray-500'>Descripción: {descripcion}</p>
+                <p className='mb-1 text-sm'>Fecha de entrega: {formatearFecha(fechaEntrega)}</p>
+                <p className='mb-1 text-sm text-gray-600'>Prioridad: {prioridad}</p>
+                {estado && <p className='text-xs bg-green-600 uppercase p-1 rounded-lg text-white font-bold'>Completada por: {tarea.completado.nombre}</p>}
             </div>
 
             <div className='flex flex-col lg:flex-row gap-2'>
