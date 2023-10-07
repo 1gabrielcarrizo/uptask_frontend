@@ -61,7 +61,7 @@ const OlvidePassword = () => {
 
         <input
           type="submit"
-          value="Crear Cuenta"
+          value="Enviar Email"
           className='bg-sky-700 w-full py-3 text-white uppercase font-bold rounded hover:cursor-pointer hover:bg-sky-800 transition-colors mb-5' />
       </form>
 

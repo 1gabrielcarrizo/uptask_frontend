@@ -58,6 +58,11 @@ const Registrar = () => {
         error: true
       })
     }
+    window.scroll({
+      top: 0,
+      left: 0,
+      behavior: 'smooth'
+    })
   }
 
   // extramemos msg de alerta en caso de que exista
