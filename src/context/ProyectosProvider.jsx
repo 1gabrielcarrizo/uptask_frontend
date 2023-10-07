@@ -323,6 +323,12 @@ const ProyectosProvider = ({ children }) => {
                 msg: error.response.data.msg,
                 error: true
             })
+
+            setTimeout(() => {
+                setAlerta({})
+            }, 3000);
+
+            setColaborador({})
         } finally {
             setCargando(false)
         }
@@ -355,6 +361,10 @@ const ProyectosProvider = ({ children }) => {
                 msg: error.response.data.msg,
                 error: true
             })
+
+            setTimeout(() => {
+                setAlerta({})
+            }, 3000);
         }
     }
     // 

@@ -8,14 +8,14 @@ const Colaborador = ({colaborador}) => {
     const {nombre, email} = colaborador
 
   return (
-    <div className='border-b p-5 flex justify-between items-center'>
+    <div className='border-b p-5 sm:flex justify-between items-center'>
 
-        <div>
+        <div className='flex flex-col items-start'>
             <p>{nombre}</p>
             <p className='text-sm text-gray-700'>{email}</p>
         </div>
 
-        <div>
+        <div className='flex flex-col lg:flex-row mt-3 sm:mt-0'>
             <button
             onClick={() => handleModalEliminarColaborador(colaborador)}
             className='bg-red-600 px-4 py-3 text-white uppercase font-bold text-sm rounded-lg'

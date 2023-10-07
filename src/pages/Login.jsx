@@ -46,6 +46,11 @@ const Login = () => {
         error: true
       })
     }
+    window.scroll({
+      top: 0,
+      left: 0,
+      behavior: 'smooth'
+    })
   }
 
   const { msg } = alerta
