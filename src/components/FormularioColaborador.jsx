@@ -47,7 +47,7 @@ const FormularioColaborador = () => {
       <input
         className='bg-sky-600 hover:bg-sky-700 w-full p-3 text-white uppercase font-bold cursor-pointer transition-colors rounded text-sm'
         type="submit"
-        value='Buscar colaborador' />
+        value='Buscar' />
     </form>
   )
 }

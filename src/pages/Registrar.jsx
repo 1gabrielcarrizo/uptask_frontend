@@ -2,6 +2,7 @@ import React, { useState } from 'react'
 import { Link } from 'react-router-dom'
 import Alerta from '../components/Alerta'
 import clienteAxios from '../config/clienteAxios'
+import Spinner2 from '../components/Spinner2'
 
 const Registrar = () => {
   // creamos 4 state para los 4 campos
@@ -10,15 +11,18 @@ const Registrar = () => {
   const [password, setPassword] = useState('')
   const [repetirPassword, setRepetirPassword] = useState('')
   const [alerta, setAlerta] = useState({})
+  const [loading, setLoading] = useState(false)
 
   const handleSubmit = async (e) => {
     e.preventDefault()
+    setLoading(true)
     // convertirmos las variables normales con string a un arreglo
     if([nombre,email,password,repetirPassword].includes('')){
       setAlerta({
         msg: "Todos los campos son obligatorios",
         error: true
       })
+      setLoading(false)
       return
     }
     // comparar si los passwords son iguales
@@ -27,6 +31,7 @@ const Registrar = () => {
         msg: "Los password no son iguales",
         error: true
       })
+      setLoading(false)
       return
     }
     // el password debe contener minimo 6 caracteres
@@ -35,6 +40,7 @@ const Registrar = () => {
         msg: "El password es muy corto, debe contener como mínimo 6 caracteres",
         error: true
       })
+      setLoading(false)
       return
     }
     setAlerta({})
@@ -57,6 +63,8 @@ const Registrar = () => {
         msg: error.response.data.msg,
         error: true
       })
+    } finally {
+      setLoading(false)
     }
     window.scroll({
       top: 0,
@@ -70,7 +78,7 @@ const Registrar = () => {
 
   return (
     <>
-      <h1 className='text-transparent bg-clip-text font-black text-6xl capitalize bg-gradient-to-br from-cyan-500 to-blue-500'>Crea tu cuenta y administra tus <span className='text-slate-700'>proyectos</span></h1>
+      <h1 className='text-transparent bg-clip-text font-black text-4xl sm:text-6xl capitalize bg-gradient-to-br from-cyan-500 to-blue-500'>Crea tu cuenta y administra tus <span className='text-slate-700'>proyectos</span></h1>
 
       {msg && <Alerta alerta={alerta}/>}
 
@@ -146,10 +154,18 @@ const Registrar = () => {
             />
         </div>
 
-        <input
+        {/* <input
           type="submit"
           value="Crear Cuenta"
-          className='bg-sky-700 w-full py-3 text-white uppercase font-bold rounded hover:cursor-pointer hover:bg-sky-800 transition-colors mb-5' />
+          className='bg-sky-700 w-full py-3 text-white uppercase font-bold rounded hover:cursor-pointer hover:bg-sky-800 transition-colors mb-5' /> */}
+
+          <button
+          type="submit"
+          disabled={loading}
+          className='bg-sky-700 w-full py-3 text-white uppercase font-bold rounded hover:bg-sky-800 transition-colors mb-5 disabled:opacity-75 hover:disabled:opacity-75 hover:disabled:bg-sky-700'
+          >
+            {loading ? <Spinner2/> : 'Crear Cuenta'}
+          </button>
       </form>
 
       <nav className='xl:flex xl:justify-between'>

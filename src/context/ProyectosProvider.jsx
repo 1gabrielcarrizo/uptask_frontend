@@ -14,6 +14,7 @@ const ProyectosProvider = ({ children }) => {
     const [alerta, setAlerta] = useState({})
     const [proyecto, setProyecto] = useState({})
     const [cargando, setCargando] = useState(true)
+    const [loading, setLoading] = useState(false)
     const [modalFormularioTarea, setModalFormularioTarea] = useState(false)
     const [tarea, setTarea] = useState(false)
     const [modalEliminarTarea, setModalEliminarTarea] = useState(false)
@@ -323,12 +324,19 @@ const ProyectosProvider = ({ children }) => {
                 msg: error.response.data.msg,
                 error: true
             })
+
+            setTimeout(() => {
+                setAlerta({})
+            }, 3000);
+
+            setColaborador({})
         } finally {
             setCargando(false)
         }
     }
     // 
     const agregarColaborador = async (email) => {
+        setLoading(true)
         try {
             const token = localStorage.getItem('token') // obtener token
             if (!token) return // es poco probable que no haya un token pero por las dudas...
@@ -355,6 +363,12 @@ const ProyectosProvider = ({ children }) => {
                 msg: error.response.data.msg,
                 error: true
             })
+
+            setTimeout(() => {
+                setAlerta({})
+            }, 3000);
+        } finally {
+            setLoading(false)
         }
     }
     // 
@@ -395,6 +409,7 @@ const ProyectosProvider = ({ children }) => {
     }
     // interactua con nuestra API
     const completarTarea = async (id) => {
+        setLoading(true)
         try {
             const token = localStorage.getItem('token') // obtener token
             if (!token) return // es poco probable que no haya un token pero por las dudas...
@@ -415,6 +430,8 @@ const ProyectosProvider = ({ children }) => {
 
         } catch (error) {
             console.error(error)
+        } finally {
+            setLoading(false)
         }
     }
     // buscador de proyectos
@@ -465,6 +482,7 @@ const ProyectosProvider = ({ children }) => {
                 obtenerProyecto,
                 proyecto,
                 cargando,
+                loading,
                 eliminarProyecto,
                 modalFormularioTarea,
                 handleModalTarea,

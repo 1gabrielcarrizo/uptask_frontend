@@ -17,12 +17,12 @@ const PreviewProyecto = ({ proyecto }) => {
                 </p>
 
                 {auth._id !== creador && (
-                    <p className='p-1 text-xs rounded-lg text-white bg-green-500 font-bold uppercase'>Colaborador</p>
+                    <p className='p-1 text-xs rounded-lg text-white bg-green-500 font-bold uppercase'>Eres Colaborador/a</p>
                 )}
             </div>
                 
             <Link
-            className='text-gray-600 hover:text-gray-800 uppercase text-sm font-bold'
+            className='text-gray-600 hover:text-gray-800 uppercase text-sm font-bold mt-3 md:mt-0'
             to={`${_id}`}
             >
                 Ver Proyecto</Link>

@@ -9,6 +9,7 @@ import Colaborador from '../components/Colaborador'
 import ModalEliminarColaborador from '../components/ModalEliminarColaborador'
 import useAdmin from '../hooks/useAdmin'
 import io from 'socket.io-client'
+import Spinner from '../components/Spinner'
 
 let socket
 
@@ -22,6 +23,13 @@ const Proyecto = () => {
     useEffect(() => {
         obtenerProyecto(params.id)
     }, [])
+    useEffect(() => {
+        window.scroll({
+            top: 0,
+            left: 0,
+            behavior: 'smooth'
+        })
+    }, [])
     // useEffect para conectarse al socket.io
     useEffect(() => {
         socket = io(import.meta.env.VITE_BACKEND_URL)
@@ -32,25 +40,25 @@ const Proyecto = () => {
     useEffect(() => {
         // poder ver las tareas agregadas
         socket.on('tarea agregada', tareaNueva => {
-            if(tareaNueva.proyecto === proyecto._id){
+            if (tareaNueva.proyecto === proyecto._id) {
                 submitTareasProyecto(tareaNueva)
             }
         })
         // poder ver las tareas eliminadas
         socket.on('tarea eliminada', tareaEliminada => {
-            if(tareaEliminada.proyecto === proyecto._id){
+            if (tareaEliminada.proyecto === proyecto._id) {
                 eliminarTareaProyecto(tareaEliminada)
             }
         })
         // poder ver las tareas actualizadas
         socket.on('tarea actualizada', tareaActualizada => {
-            if(tareaActualizada.proyecto._id === proyecto._id){
+            if (tareaActualizada.proyecto._id === proyecto._id) {
                 actualizarTareaProyecto(tareaActualizada)
             }
         })
         // poder ver las tareas que se completan
         socket.on('nuevo estado', nuevoEstadoTarea => {
-            if(nuevoEstadoTarea.proyecto._id === proyecto._id){
+            if (nuevoEstadoTarea.proyecto._id === proyecto._id) {
                 cambiarEstadoTarea(nuevoEstadoTarea)
             }
         })
@@ -60,17 +68,17 @@ const Proyecto = () => {
 
     const { nombre } = proyecto
 
-    if (cargando) return 'Cargando...'
+    if (cargando) return <Spinner />
 
-    const { msg } = alerta
+    // const { msg } = alerta
 
     return (
         <>
-            <div className='flex justify-between'>
+            <div className='sm:flex justify-between'>
                 <h1 className='font-black text-4xl'>{nombre}</h1>
 
                 {admin && (
-                    <div className='flex items-center gap-2 text-gray-400 hover:text-black'>
+                    <div className='flex items-center gap-2 text-gray-400 hover:text-black mt-3 sm:mt-0'>
                         <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" strokeWidth={1.5} stroke="currentColor" className="w-6 h-6">
                             <path strokeLinecap="round" strokeLinejoin="round" d="M16.862 4.487l1.687-1.688a1.875 1.875 0 112.652 2.652L6.832 19.82a4.5 4.5 0 01-1.897 1.13l-2.685.8.8-2.685a4.5 4.5 0 011.13-1.897L16.863 4.487zm0 0L19.5 7.125" />
                         </svg>
@@ -111,7 +119,7 @@ const Proyecto = () => {
 
             {admin && (
                 <>
-                    <div className='flex items-center justify-between mt-10'>
+                    <div className='sm:flex items-center justify-between mt-10'>
                         <p className='font-bold text-xl'>Colaboradores</p>
                         <Link
                             to={`/proyectos/nuevo-colaborador/${proyecto._id}`}
