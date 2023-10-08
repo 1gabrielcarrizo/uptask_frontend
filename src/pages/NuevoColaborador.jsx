@@ -3,6 +3,7 @@ import FormularioColaborador from '../components/FormularioColaborador'
 import useProyectos from '../hooks/useProyectos'
 import { useParams } from 'react-router-dom'
 import Alerta from '../components/Alerta'
+import Spinner from '../components/Spinner'
 
 const NuevoColaborador = () => {
 
@@ -27,21 +28,21 @@ const NuevoColaborador = () => {
                 <FormularioColaborador />
             </div>
 
-            {cargando ? <p className='text-center'>Cargando...</p> : colaborador?._id && (
+            {cargando ? <Spinner/> : colaborador?._id && (
                 <div className='flex justify-center mt-10'>
                     <div className='bg-white py-10 px-5 md:w-1/2 rounded-lg shadow w-full'>
                         <h2 className='text-center mb-10 text-2xl font-bold'>
                             Resultado:
                         </h2>
-                        <div className='flex justify-between items-center'>
-                            <p>{colaborador.nombre}</p>
+                        <div className='sm:flex justify-between items-center'>
+                            <p className='text-center sm:mr-4 mb-3 sm:mb-0'>{colaborador.nombre}</p>
 
                             <button
                             onClick={() => agregarColaborador({
                                 email: colaborador.email
                             })}
                             type='button'
-                            className='bg-slate-500 px-5 py-2 rounded-lg uppercase text-white font-bold text-sm'>
+                            className='bg-sky-600 hover:bg-sky-700 px-5 py-2 rounded-lg uppercase text-white font-bold text-sm text-center mx-auto sm:mx-0 flex transition-colors'>
                                 Agregar al Proyecto
                             </button>
                         </div>

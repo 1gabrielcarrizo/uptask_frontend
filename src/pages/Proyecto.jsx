@@ -9,6 +9,7 @@ import Colaborador from '../components/Colaborador'
 import ModalEliminarColaborador from '../components/ModalEliminarColaborador'
 import useAdmin from '../hooks/useAdmin'
 import io from 'socket.io-client'
+import Spinner from '../components/Spinner'
 
 let socket
 
@@ -60,7 +61,7 @@ const Proyecto = () => {
 
     const { nombre } = proyecto
 
-    if (cargando) return 'Cargando...'
+    if (cargando) return <Spinner/>
 
     const { msg } = alerta
 

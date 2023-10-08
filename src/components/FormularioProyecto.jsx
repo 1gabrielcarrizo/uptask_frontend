@@ -2,6 +2,7 @@ import React, { useEffect, useState } from 'react'
 import useProyectos from '../hooks/useProyectos'
 import Alerta from './Alerta'
 import { useParams } from 'react-router-dom'
+import Spinner2 from './Spinner2'
 
 const FormularioProyecto = () => {
 
@@ -11,14 +12,15 @@ const FormularioProyecto = () => {
     const [descripcion, setDescripcion] = useState('')
     const [fechaEntrega, setFechaEntrega] = useState('')
     const [cliente, setCliente] = useState('')
+    const [loading, setLoading] = useState(false)
 
     const params = useParams()
-    
-    const {mostrarAlerta, alerta, submitProyecto, proyecto} = useProyectos()
-    
+
+    const { mostrarAlerta, alerta, submitProyecto, proyecto } = useProyectos()
+
     useEffect(() => {
         // console.log(params)
-        if(params.id){
+        if (params.id) {
             setId(proyecto._id)
             setNombre(proyecto.nombre)
             setDescripcion(proyecto.descripcion)
@@ -26,36 +28,62 @@ const FormularioProyecto = () => {
             setCliente(proyecto.cliente)
         }
     }, [params])
-    
+
 
     const handleSubmit = async (e) => {
         e.preventDefault()
-        if([nombre, descripcion, fechaEntrega, cliente].includes('')){
+        setLoading(true)
+        if ([nombre, descripcion, fechaEntrega, cliente].includes('')) {
             mostrarAlerta({
                 msg: 'Todos los campos son obligatorios',
                 error: true
             })
+            setLoading(false)
             return
         }
+        /*
         // pasar los datos al provider
-        await submitProyecto({id, nombre, descripcion, fechaEntrega, cliente})
+        await submitProyecto({ id, nombre, descripcion, fechaEntrega, cliente })
         // reiniciamos el formulario
         setId(null)
         setNombre('')
         setDescripcion('')
         setFechaEntrega('')
         setCliente('')
-        focus()
+        // focus()
+        setLoading(false)
+        */
+        try {
+            // pasar los datos al provider
+            await submitProyecto({ id, nombre, descripcion, fechaEntrega, cliente })
+            // reiniciamos el formulario
+            setId(null)
+            setNombre('')
+            setDescripcion('')
+            setFechaEntrega('')
+            setCliente('')
+            // focus()
+
+            window.scroll({
+                top: 0,
+                left: 0,
+                behavior: 'smooth'
+            })
+        } catch (error) {
+            console.error(error)
+        } finally {
+            setLoading(false)
+        }
     }
 
-    const {msg} = alerta
+    const { msg } = alerta
 
     return (
         <form
-        onSubmit={handleSubmit}
-        className='bg-white py-10 px-5 md:w-1/2 rounded-lg shadow'>
+            onSubmit={handleSubmit}
+            className='bg-white py-10 px-5 md:w-1/2 rounded-lg shadow'>
 
-            {msg && <Alerta alerta={alerta}/>}
+            {msg && <Alerta alerta={alerta} />}
 
             <div className='mb-5'>
                 <label
@@ -70,7 +98,7 @@ const FormularioProyecto = () => {
                     type="text"
                     value={nombre}
                     onChange={(e) => setNombre(e.target.value)}
-                    />
+                />
             </div>
 
             <div className='mb-5'>
@@ -85,7 +113,7 @@ const FormularioProyecto = () => {
                     placeholder='Descripcion del Proyecto'
                     value={descripcion}
                     onChange={(e) => setDescripcion(e.target.value)}
-                    />
+                />
             </div>
 
             <div className='mb-5'>
@@ -100,7 +128,7 @@ const FormularioProyecto = () => {
                     type="date"
                     value={fechaEntrega}
                     onChange={(e) => setFechaEntrega(e.target.value)}
-                    />
+                />
             </div>
 
             <div className='mb-5'>
@@ -116,13 +144,21 @@ const FormularioProyecto = () => {
                     type="text"
                     value={cliente}
                     onChange={(e) => setCliente(e.target.value)}
-                    />
+                />
             </div>
 
-            <input
-            className='bg-sky-600 w-full p-3 uppercase font-bold text-white rounded cursor-pointer hover:bg-sky-700 transition-colors'
-            type="submit"
-            value={id ? 'Actualizar Proyecto' : 'Crear Proyecto'} />
+            {/* <input
+                className='bg-sky-600 w-full p-3 uppercase font-bold text-white rounded cursor-pointer hover:bg-sky-700 transition-colors'
+                type="submit"
+                value={id ? 'Actualizar Proyecto' : 'Crear Proyecto'} /> */}
+
+            <button
+                type="submit"
+                disabled={loading}
+                className='bg-sky-700 w-full py-3 text-white uppercase font-bold rounded hover:bg-sky-800 transition-colors mb-5 disabled:opacity-75 hover:disabled:opacity-75 hover:disabled:bg-sky-700'
+            >
+                {loading ? <Spinner2 /> : (id ? 'Actualizar Proyecto' : 'Crear Proyecto')}
+            </button>
         </form>
     )
 }

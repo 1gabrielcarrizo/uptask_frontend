@@ -3,11 +3,16 @@ import useAuth from '../hooks/useAuth'
 import { Navigate, Outlet } from 'react-router-dom'
 import Header from '../components/Header'
 import Sidebar from '../components/Sidebar'
+import Spinner from '../components/Spinner'
 
 const RutaProtegida = () => {
 
     const { auth, cargando } = useAuth()
-    if(cargando) return 'Cargando...' // se puede colocar un spinner
+    if(cargando) return (
+        <div className='flex items-center justify-center h-screen'>
+            <Spinner/>
+        </div>
+    ) // se puede colocar un spinner
 
     return (
         <>
