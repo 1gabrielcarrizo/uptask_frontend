@@ -2,10 +2,11 @@ import React from 'react'
 import { formatearFecha } from '../helpers/formatearFecha'
 import useProyectos from '../hooks/useProyectos'
 import useAdmin from '../hooks/useAdmin'
+import Spinner2 from './Spinner2'
 
 const Tarea = ({ tarea }) => {
 
-    const { handleModalEditarTarea, handleModalEliminarTarea, completarTarea } = useProyectos()
+    const { handleModalEditarTarea, handleModalEliminarTarea, completarTarea, loading } = useProyectos()
 
     const admin = useAdmin()
 
@@ -32,9 +33,11 @@ const Tarea = ({ tarea }) => {
 
                 <button
                     onClick={() => completarTarea(_id)}
-                        className={`${estado ? 'bg-sky-600': 'bg-gray-600'} px-4 py-3 text-white uppercase font-bold text-sm rounded-lg`}>
-                        {estado ? 'Completa' : 'Incompleta'}
-                    </button>
+                    className={`${estado ? 'bg-sky-600' : 'bg-gray-600'} px-4 py-3 text-white uppercase font-bold text-sm rounded-lg disabled:opacity-75`}
+                    disabled={loading}
+                >
+                    {loading ? <Spinner2 /> : (estado ? 'Completa' : 'Incompleta')}
+                </button>
 
                 {admin && (
                     <button

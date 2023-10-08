@@ -29,7 +29,7 @@ const EditarProyecto = () => {
         <>
             <div className='sm:flex justify-between'>
                 <h1 className='font-black text-4xl sm:pr-3'>
-                    Editar Proyecto: {nombre}
+                    Editar Proyecto: <span className='text-transparent bg-clip-text bg-gradient-to-br from-cyan-500 to-blue-500'>{nombre}</span>
                 </h1>
                 <div className='flex items-center gap-2 text-gray-400 hover:text-black mt-3 sm:mt-0'>
                     <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" strokeWidth={1.5} stroke="currentColor" className="w-6 h-6">

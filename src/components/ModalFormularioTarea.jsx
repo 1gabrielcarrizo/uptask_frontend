@@ -3,6 +3,7 @@ import { Dialog, Transition } from '@headlessui/react'
 import useProyectos from '../hooks/useProyectos'
 import Alerta from './Alerta'
 import { useParams } from 'react-router-dom'
+import Spinner2 from './Spinner2'
 
 const PRIORIDAD = ['Baja', 'Media', 'Alta']
 
@@ -13,13 +14,14 @@ const ModalFormularioTarea = () => {
     const [descripcion, setDescripcion] = useState('')
     const [fechaEntrega, setFechaEntrega] = useState('')
     const [prioridad, setPrioridad] = useState('')
+    const [loading, setLoading] = useState(false)
     // extraemos el id del proyecto de la URL porque en el modelo de tareas se lo necesita
     const params = useParams()
 
     const { modalFormularioTarea, handleModalTarea, mostrarAlerta, alerta, submitTarea, tarea } = useProyectos()
 
     useEffect(() => {
-        if(tarea?._id){
+        if (tarea?._id) {
             setId(tarea._id)
             setNombre(tarea.nombre)
             setDescripcion(tarea.descripcion)
@@ -36,20 +38,37 @@ const ModalFormularioTarea = () => {
 
     const handleSubmit = async (e) => {
         e.preventDefault()
+        setLoading(true)
         if ([nombre, descripcion, fechaEntrega, prioridad].includes('')) {
             mostrarAlerta({
                 msg: "Todos los campos son obligatorios",
                 error: true
             })
+            setLoading(false)
             return
         }
-        await submitTarea({id, nombre, descripcion, fechaEntrega, prioridad, proyecto: params.id })
+        /*
+        await submitTarea({ id, nombre, descripcion, fechaEntrega, prioridad, proyecto: params.id })
 
         setId('')
         setNombre('')
         setDescripcion('')
         setFechaEntrega('')
         setPrioridad('')
+        */
+        try {
+            await submitTarea({ id, nombre, descripcion, fechaEntrega, prioridad, proyecto: params.id })
+
+            setId('')
+            setNombre('')
+            setDescripcion('')
+            setFechaEntrega('')
+            setPrioridad('')
+        } catch (error) {
+            console.error(error)
+        } finally {
+            setLoading(false)
+        }
     }
 
     const { msg } = alerta
@@ -178,10 +197,18 @@ const ModalFormularioTarea = () => {
                                             </select>
                                         </div>
 
-                                        <input
-                                            className='bg-sky-600 hover:bg-sky-700 w-full p-3 text-white uppercase font-bold cursor-pointer transition-colors rounded text-sm'
+                                        {/* <input
+                                            className='bg-sky-600 hover:bg-sky-700 w-fll up-3 text-white uppercase font-bold cursor-pointer transition-colors rounded text-sm'
                                             type="submit"
-                                            value={id ? 'Guardar Cambios' : 'Crear Tarea'} />
+                                            value={id ? 'Guardar Cambios' : 'Crear Tarea'} /> */}
+
+                                        <button
+                                            type="submit"
+                                            disabled={loading}
+                                            className='bg-sky-600 w-full py-3 text-white uppercase font-bold rounded hover:bg-sky-700 transition-colors mb-5 disabled:opacity-75 hover:disabled:opacity-75 hover:disabled:bg-sky-700 w-fll up-3 text-sm'
+                                        >
+                                            {loading ? <Spinner2 /> : (id ? 'Guardar Cambios' : 'Crear Tarea')}
+                                        </button>
                                     </form>
                                 </div>
                             </div>

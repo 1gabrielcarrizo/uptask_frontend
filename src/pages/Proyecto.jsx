@@ -23,6 +23,13 @@ const Proyecto = () => {
     useEffect(() => {
         obtenerProyecto(params.id)
     }, [])
+    useEffect(() => {
+        window.scroll({
+            top: 0,
+            left: 0,
+            behavior: 'smooth'
+        })
+    }, [])
     // useEffect para conectarse al socket.io
     useEffect(() => {
         socket = io(import.meta.env.VITE_BACKEND_URL)
@@ -33,25 +40,25 @@ const Proyecto = () => {
     useEffect(() => {
         // poder ver las tareas agregadas
         socket.on('tarea agregada', tareaNueva => {
-            if(tareaNueva.proyecto === proyecto._id){
+            if (tareaNueva.proyecto === proyecto._id) {
                 submitTareasProyecto(tareaNueva)
             }
         })
         // poder ver las tareas eliminadas
         socket.on('tarea eliminada', tareaEliminada => {
-            if(tareaEliminada.proyecto === proyecto._id){
+            if (tareaEliminada.proyecto === proyecto._id) {
                 eliminarTareaProyecto(tareaEliminada)
             }
         })
         // poder ver las tareas actualizadas
         socket.on('tarea actualizada', tareaActualizada => {
-            if(tareaActualizada.proyecto._id === proyecto._id){
+            if (tareaActualizada.proyecto._id === proyecto._id) {
                 actualizarTareaProyecto(tareaActualizada)
             }
         })
         // poder ver las tareas que se completan
         socket.on('nuevo estado', nuevoEstadoTarea => {
-            if(nuevoEstadoTarea.proyecto._id === proyecto._id){
+            if (nuevoEstadoTarea.proyecto._id === proyecto._id) {
                 cambiarEstadoTarea(nuevoEstadoTarea)
             }
         })
@@ -61,9 +68,9 @@ const Proyecto = () => {
 
     const { nombre } = proyecto
 
-    if (cargando) return <Spinner/>
+    if (cargando) return <Spinner />
 
-    const { msg } = alerta
+    // const { msg } = alerta
 
     return (
         <>

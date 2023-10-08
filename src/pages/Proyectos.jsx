@@ -5,6 +5,15 @@ import Alerta from '../components/Alerta'
 
 
 const Proyectos = () => {
+
+  useEffect(() => {
+    window.scroll({
+          top: 0,
+          left: 0,
+          behavior: 'smooth'
+      })
+  }, [])
+  
   
   const { proyectos, alerta } = useProyectos()
 
