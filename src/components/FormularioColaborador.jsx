@@ -1,4 +1,4 @@
-import React, { useState } from 'react'
+import React, { useEffect, useState } from 'react'
 import useProyectos from '../hooks/useProyectos'
 import Alerta from './Alerta'
 
@@ -7,6 +7,10 @@ const FormularioColaborador = () => {
   const [email, setEmail] = useState('')
 
   const { mostrarAlerta, alerta, submitColaborador } = useProyectos()
+
+  useEffect(() => {
+    setEmail('')
+  }, [alerta])
 
   const handleSubmit = (e) => {
     e.preventDefault()

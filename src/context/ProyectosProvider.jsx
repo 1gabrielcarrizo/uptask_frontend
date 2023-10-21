@@ -494,6 +494,7 @@ const ProyectosProvider = ({ children }) => {
                 eliminarTarea,
                 submitColaborador,
                 colaborador,
+                setColaborador,
                 agregarColaborador,
                 handleModalEliminarColaborador,
                 modalEliminarColaborador,
