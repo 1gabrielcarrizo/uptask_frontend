@@ -19,7 +19,7 @@ const NuevoColaborador = () => {
 
     // if (cargando) return 'Cargando...'
 
-    if (!proyecto?._id) return <Alerta alerta={alerta} />
+    if (!proyecto?._id) return <Alerta alerta={alerta} /> // eliminar posiblemente
 
     return (
         <>

@@ -85,6 +85,7 @@ const Login = () => {
             onChange={(e) => setEmail(e.target.value)}
             type="email"
             id='email'
+            maxLength={50}
             placeholder='Email de Registro'
             className='w-full mt-3 p-3 border rounded-xl bg-gray-50' />
         </div>
@@ -100,6 +101,7 @@ const Login = () => {
             onChange={(e) => setPassword(e.target.value)}
             type="password"
             id='password'
+            maxLength={200}
             placeholder='Password de Registro'
             className='w-full mt-3 p-3 border rounded-xl bg-gray-50' />
         </div>

@@ -37,8 +37,9 @@ const FormularioColaborador = () => {
         <input
           id='email'
           type="email"
-          className='border-2 w-full p-2 mt-2 placeholder-gray-400 rounded-md'
+          className='border-2 w-full p-2 mt-2 placeholder-gray-400 rounded-md bg-gray-50'
           value={email}
+          maxLength={50}
           onChange={(e) => setEmail(e.target.value)}
           placeholder='Email del usuario'
         />

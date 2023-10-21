@@ -141,10 +141,11 @@ const ModalFormularioTarea = () => {
                                                 Nombre Tarea
                                             </label>
                                             <input
-                                                className='border-2 w-full p-2 mt-2 placeholder-gray-400 rounded-md'
+                                                className='border-2 w-full p-2 mt-2 placeholder-gray-400 rounded-md bg-gray-50 wrap'
                                                 value={nombre}
                                                 onChange={(e) => setNombre(e.target.value)}
                                                 placeholder='Nombre de la Tarea'
+                                                maxLength={100}
                                                 id='nombre'
                                                 type="text" />
                                         </div>
@@ -156,10 +157,11 @@ const ModalFormularioTarea = () => {
                                                 Descripcion Tarea
                                             </label>
                                             <textarea
-                                                className='border-2 w-full p-2 mt-2 placeholder-gray-400 rounded-md'
+                                                className='border-2 w-full p-2 mt-2 placeholder-gray-400 rounded-md bg-gray-50'
                                                 value={descripcion}
                                                 onChange={(e) => setDescripcion(e.target.value)}
                                                 placeholder='Descripcion de la Tarea'
+                                                maxLength={300}
                                                 id='descripcion' />
                                         </div>
 
@@ -171,7 +173,7 @@ const ModalFormularioTarea = () => {
                                             </label>
                                             <input
                                                 id='fecha-entrega'
-                                                className='border-2 w-full p-2 mt-2 placeholder-gray-400 rounded-md'
+                                                className='border-2 w-full p-2 mt-2 placeholder-gray-400 rounded-md bg-gray-50 wrap'
                                                 value={fechaEntrega}
                                                 onChange={(e) => setFechaEntrega(e.target.value)}
                                                 type="date" />
@@ -185,7 +187,7 @@ const ModalFormularioTarea = () => {
                                             </label>
                                             <select
                                                 id="prioridad"
-                                                className='border-2 w-full p-2 mt-2 placeholder-gray-400 rounded-md'
+                                                className='border-2 w-full p-2 mt-2 placeholder-gray-400 rounded-md bg-gray-50 wrap'
                                                 value={prioridad}
                                                 onChange={(e) => setPrioridad(e.target.value)}
                                             >
