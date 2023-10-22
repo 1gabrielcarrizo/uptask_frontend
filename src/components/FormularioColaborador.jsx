@@ -1,4 +1,4 @@
-import React, { useState } from 'react'
+import React, { useEffect, useState } from 'react'
 import useProyectos from '../hooks/useProyectos'
 import Alerta from './Alerta'
 
@@ -7,6 +7,10 @@ const FormularioColaborador = () => {
   const [email, setEmail] = useState('')
 
   const { mostrarAlerta, alerta, submitColaborador } = useProyectos()
+
+  useEffect(() => {
+    setEmail('')
+  }, [alerta])
 
   const handleSubmit = (e) => {
     e.preventDefault()
@@ -37,8 +41,9 @@ const FormularioColaborador = () => {
         <input
           id='email'
           type="email"
-          className='border-2 w-full p-2 mt-2 placeholder-gray-400 rounded-md'
+          className='border-2 w-full p-2 mt-2 placeholder-gray-400 rounded-md bg-gray-50'
           value={email}
+          maxLength={50}
           onChange={(e) => setEmail(e.target.value)}
           placeholder='Email del usuario'
         />

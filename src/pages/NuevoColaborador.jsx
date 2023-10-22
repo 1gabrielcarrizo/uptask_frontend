@@ -8,18 +8,23 @@ import Spinner2 from '../components/Spinner2'
 
 const NuevoColaborador = () => {
 
-    const { obtenerProyecto, proyecto, cargando, colaborador, agregarColaborador, alerta, loading } = useProyectos()
+    const { obtenerProyecto, proyecto, cargando, colaborador, agregarColaborador, alerta, loading, setColaborador } = useProyectos()
     const params = useParams()
 
     useEffect(() => {
         obtenerProyecto(params.id)
     }, [])
 
+    useEffect(() => {
+        setColaborador({})
+    }, [])
+    
+
     // console.log(colaborador)
 
     // if (cargando) return 'Cargando...'
 
-    if (!proyecto?._id) return <Alerta alerta={alerta} />
+    if (!proyecto?._id) return <Alerta alerta={alerta} /> // eliminar posiblemente?
 
     return (
         <>

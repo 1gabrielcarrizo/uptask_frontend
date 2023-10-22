@@ -93,9 +93,10 @@ const FormularioProyecto = () => {
                 </label>
                 <input
                     id='nombre'
-                    className='border w-full p-2 mt-2 placeholder-gray-400 rounded-md'
+                    className='border w-full p-2 mt-2 placeholder-gray-400 rounded-md bg-gray-50'
                     placeholder='Nombre del Proyecto'
                     type="text"
+                    maxLength={100}
                     value={nombre}
                     onChange={(e) => setNombre(e.target.value)}
                 />
@@ -109,8 +110,9 @@ const FormularioProyecto = () => {
                 </label>
                 <textarea
                     id='descripcion'
-                    className='border w-full p-2 mt-2 placeholder-gray-400 rounded-md'
+                    className='border w-full p-2 mt-2 placeholder-gray-400 rounded-md bg-gray-50'
                     placeholder='Descripcion del Proyecto'
+                    maxLength={300}
                     value={descripcion}
                     onChange={(e) => setDescripcion(e.target.value)}
                 />
@@ -124,7 +126,7 @@ const FormularioProyecto = () => {
                 </label>
                 <input
                     id='fecha-entrega'
-                    className='border w-full p-2 mt-2 placeholder-gray-400 rounded-md'
+                    className='border w-full p-2 mt-2 placeholder-gray-400 rounded-md bg-gray-50'
                     type="date"
                     value={fechaEntrega}
                     onChange={(e) => setFechaEntrega(e.target.value)}
@@ -139,9 +141,10 @@ const FormularioProyecto = () => {
                 </label>
                 <input
                     id='cliente'
-                    className='border w-full p-2 mt-2 placeholder-gray-400 rounded-md'
+                    className='border w-full p-2 mt-2 placeholder-gray-400 rounded-md bg-gray-50'
                     placeholder='Nombre del Cliente'
                     type="text"
+                    maxLength={50}
                     value={cliente}
                     onChange={(e) => setCliente(e.target.value)}
                 />
