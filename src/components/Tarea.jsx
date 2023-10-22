@@ -33,10 +33,11 @@ const Tarea = ({ tarea }) => {
 
                 <button
                     onClick={() => completarTarea(_id)}
-                    className={`${estado ? 'bg-sky-600' : 'bg-gray-600'} px-4 py-3 text-white uppercase font-bold text-sm rounded-lg disabled:opacity-75`}
+                    className={`${estado ? 'bg-sky-600' : 'bg-gray-600'} px-4 py-3 text-white uppercase font-bold text-sm rounded-lg`}
                     disabled={loading}
                 >
-                    {loading ? <Spinner2 /> : (estado ? 'Completa' : 'Incompleta')}
+                    {/* {loading ? <Spinner2 /> : (estado ? 'Completa' : 'Incompleta')} */}
+                    {estado ? 'Completa' : 'Incompleta'}
                 </button>
 
                 {admin && (
