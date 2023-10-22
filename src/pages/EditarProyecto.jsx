@@ -1,13 +1,14 @@
-import React, { useEffect } from 'react'
+import React, { useEffect, useRef } from 'react'
 import useProyectos from '../hooks/useProyectos'
 import { useParams } from 'react-router-dom'
 import FormularioProyecto from '../components/FormularioProyecto'
 import Spinner from '../components/Spinner'
+import ModalEliminarProyecto from '../components/ModalEliminarProyecto'
 
 const EditarProyecto = () => {
 
     const { id } = useParams() // obtenemos el "id" de la URL
-    const { obtenerProyecto, proyecto, cargando, eliminarProyecto } = useProyectos()
+    const { obtenerProyecto, proyecto, cargando, handleModalEliminarProyecto } = useProyectos()
     // console.table(proyecto)
 
     // con el useEffect, al recargar la pagina, mantenemos los datos
@@ -16,12 +17,13 @@ const EditarProyecto = () => {
     }, [])
 
     const { nombre } = proyecto
+    const nombreRef = useRef(nombre)
 
-    const handleClick = () => {
-        if(confirm("Deseas eliminar este proyecto?")){
-            eliminarProyecto(id)
-        }
-    }
+    // const handleClick = () => {
+    //     if(confirm("Deseas eliminar este proyecto?")){
+    //         eliminarProyecto(id)
+    //     }
+    // }
 
     if (cargando) return <Spinner/>
 
@@ -29,7 +31,7 @@ const EditarProyecto = () => {
         <>
             <div className='sm:flex justify-between'>
                 <h1 className='font-black text-4xl sm:pr-3'>
-                    Editar Proyecto: <span className='text-transparent bg-clip-text bg-gradient-to-br from-cyan-500 to-blue-500'>{nombre}</span>
+                    Editar Proyecto: <span className='text-transparent bg-clip-text bg-gradient-to-br from-cyan-500 to-blue-500'>{nombreRef.current}</span>
                 </h1>
                 <div className='flex items-center gap-2 text-gray-400 hover:text-black mt-3 sm:mt-0'>
                     <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" strokeWidth={1.5} stroke="currentColor" className="w-6 h-6">
@@ -37,8 +39,9 @@ const EditarProyecto = () => {
                     </svg>
 
                     <button
-                    onClick={handleClick}
-                        className='uppercase font-bold'
+                    // onClick={handleClick}
+                    onClick={() => handleModalEliminarProyecto(id)}
+                    className='uppercase font-bold'
                     >Eliminar</button>
                 </div>
             </div>
@@ -46,6 +49,7 @@ const EditarProyecto = () => {
             <div className='mt-10 flex justify-center'>
                 <FormularioProyecto />
             </div>
+            <ModalEliminarProyecto id={id}/>
         </>
     )
 }

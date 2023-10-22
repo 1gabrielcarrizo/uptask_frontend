@@ -18,6 +18,7 @@ const ProyectosProvider = ({ children }) => {
     const [modalFormularioTarea, setModalFormularioTarea] = useState(false)
     const [tarea, setTarea] = useState(false)
     const [modalEliminarTarea, setModalEliminarTarea] = useState(false)
+    const [modalEliminarProyecto, setModalEliminarProyecto] = useState(false)
     const [colaborador, setColaborador] = useState({})
     const [modalEliminarColaborador, setModalEliminarColaborador] = useState(false)
     const [buscador, setBuscador] = useState(false)
@@ -272,6 +273,11 @@ const ProyectosProvider = ({ children }) => {
         setTarea(tarea)
         setModalEliminarTarea(!modalEliminarTarea)
     }
+    // 
+    const handleModalEliminarProyecto = (proyecto) => {
+        setProyecto(proyecto)
+        setModalEliminarProyecto(!modalEliminarProyecto)
+    }
     // interactua con nuestra API
     const eliminarTarea = async () => {
         try {
@@ -491,6 +497,8 @@ const ProyectosProvider = ({ children }) => {
                 tarea,
                 modalEliminarTarea,
                 handleModalEliminarTarea,
+                modalEliminarProyecto,
+                handleModalEliminarProyecto,
                 eliminarTarea,
                 submitColaborador,
                 colaborador,
