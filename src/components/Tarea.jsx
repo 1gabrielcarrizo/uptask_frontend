@@ -10,7 +10,7 @@ const Tarea = ({ tarea }) => {
 
     const admin = useAdmin()
 
-    const { descripcion, nombre, prioridad, fechaEntrega, estado, _id } = tarea
+    const { descripcion, recurso, nombre, prioridad, fechaEntrega, estado, _id } = tarea
 
     return (
         <div className='border-b p-5 sm:flex justify-between items-center'>
@@ -18,6 +18,7 @@ const Tarea = ({ tarea }) => {
                 <p className='mb-1 text-xl'><span className='font-bold'>Nombre:</span> {nombre}</p>
                 <p className='mb-1 text-sm text-gray-500 break-words'><span className='font-bold'>Descripción:</span> {descripcion}</p>
                 <p className='mb-1 text-sm'><span className='font-bold'>Fecha de entrega:</span> {formatearFecha(fechaEntrega)}</p>
+                <p className='mb-1 text-sm text-gray-500 break-words'><span className='font-bold'>Recursos:</span> {recurso}</p>
                 <p className='mb-1 text-sm text-gray-600'><span className='font-bold'>Prioridad:</span> {prioridad}</p>
                 {estado && <p className='text-xs bg-green-600 uppercase p-2 rounded-lg text-white font-bold'>Completada por: {tarea.completado.nombre}</p>}
             </div>
