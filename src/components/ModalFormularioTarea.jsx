@@ -12,6 +12,7 @@ const ModalFormularioTarea = () => {
     const [id, setId] = useState('')
     const [nombre, setNombre] = useState('')
     const [descripcion, setDescripcion] = useState('')
+    const [recurso, setRecurso] = useState('')
     const [fechaEntrega, setFechaEntrega] = useState('')
     const [prioridad, setPrioridad] = useState('')
     const [loading, setLoading] = useState(false)
@@ -25,6 +26,7 @@ const ModalFormularioTarea = () => {
             setId(tarea._id)
             setNombre(tarea.nombre)
             setDescripcion(tarea.descripcion)
+            setRecurso(tarea.recurso)
             setFechaEntrega(tarea.fechaEntrega?.split('T')[0])
             setPrioridad(tarea.prioridad)
             return
@@ -32,6 +34,7 @@ const ModalFormularioTarea = () => {
         setId('')
         setNombre('')
         setDescripcion('')
+        setRecurso('')
         setFechaEntrega('')
         setPrioridad('')
     }, [tarea])
@@ -39,7 +42,7 @@ const ModalFormularioTarea = () => {
     const handleSubmit = async (e) => {
         e.preventDefault()
         setLoading(true)
-        if ([nombre, descripcion, fechaEntrega, prioridad].includes('')) {
+        if ([nombre, descripcion, recurso, fechaEntrega, prioridad].includes('')) {
             mostrarAlerta({
                 msg: "Todos los campos son obligatorios",
                 error: true
@@ -48,20 +51,22 @@ const ModalFormularioTarea = () => {
             return
         }
         /*
-        await submitTarea({ id, nombre, descripcion, fechaEntrega, prioridad, proyecto: params.id })
+        await submitTarea({ id, nombre, descripcion, recurso, fechaEntrega, prioridad, proyecto: params.id })
 
         setId('')
         setNombre('')
         setDescripcion('')
+        setRecurso('')
         setFechaEntrega('')
         setPrioridad('')
         */
         try {
-            await submitTarea({ id, nombre, descripcion, fechaEntrega, prioridad, proyecto: params.id })
+            await submitTarea({ id, nombre, descripcion, recurso, fechaEntrega, prioridad, proyecto: params.id })
 
             setId('')
             setNombre('')
             setDescripcion('')
+            setRecurso('')
             setFechaEntrega('')
             setPrioridad('')
         } catch (error) {
@@ -138,7 +143,7 @@ const ModalFormularioTarea = () => {
                                             <label
                                                 className='text-gray-700 uppercase font-bold text-sm'
                                                 htmlFor="nombre">
-                                                Nombre Tarea
+                                                Nombre
                                             </label>
                                             <input
                                                 className='border-2 w-full p-2 mt-2 placeholder-gray-400 rounded-md bg-gray-50 wrap'
@@ -154,7 +159,7 @@ const ModalFormularioTarea = () => {
                                             <label
                                                 className='text-gray-700 uppercase font-bold text-sm'
                                                 htmlFor="descripcion">
-                                                Descripcion Tarea
+                                                Descripción
                                             </label>
                                             <textarea
                                                 className='border-2 w-full p-2 mt-2 placeholder-gray-400 rounded-md bg-gray-50'
@@ -169,7 +174,7 @@ const ModalFormularioTarea = () => {
                                             <label
                                                 className='text-gray-700 uppercase font-bold text-sm'
                                                 htmlFor="fecha-entrega">
-                                                Fecha Entrega
+                                                Fecha de Entrega
                                             </label>
                                             <input
                                                 id='fecha-entrega'
@@ -183,7 +188,7 @@ const ModalFormularioTarea = () => {
                                             <label
                                                 className='text-gray-700 uppercase font-bold text-sm'
                                                 htmlFor="prioridad">
-                                                Prioridad Tarea
+                                                Prioridad
                                             </label>
                                             <select
                                                 id="prioridad"
@@ -197,6 +202,21 @@ const ModalFormularioTarea = () => {
                                                     <option key={opcion}>{opcion}</option>
                                                 ))}
                                             </select>
+                                        </div>
+
+                                        <div className='mb-5'>
+                                            <label
+                                                className='text-gray-700 uppercase font-bold text-sm'
+                                                htmlFor="recurso">
+                                                Recursos
+                                            </label>
+                                            <textarea
+                                                className='border-2 w-full p-2 mt-2 placeholder-gray-400 rounded-md bg-gray-50'
+                                                value={recurso}
+                                                onChange={(e) => setRecurso(e.target.value)}
+                                                placeholder='Recursos de la Tarea'
+                                                maxLength={300}
+                                                id='recurso' />
                                         </div>
 
                                         {/* <input
