@@ -1,4 +1,4 @@
-import React, { useEffect } from 'react'
+import React, { useEffect, useState } from 'react'
 import { Link, useParams } from 'react-router-dom'
 import useProyectos from '../hooks/useProyectos'
 import ModalFormularioTarea from '../components/ModalFormularioTarea'
@@ -10,10 +10,12 @@ import ModalEliminarColaborador from '../components/ModalEliminarColaborador'
 import useAdmin from '../hooks/useAdmin'
 import io from 'socket.io-client'
 import Spinner from '../components/Spinner'
+import BarraDeProgreso from '../components/BarraDeProgreso'
 
 let socket
 
 const Proyecto = () => {
+    const [progreso, setProgreso] = useState(0);
 
     const params = useParams() // obtenemos el "id" de la URL
     const { obtenerProyecto, proyecto, cargando, handleModalTarea, alerta, submitTareasProyecto, eliminarTareaProyecto, actualizarTareaProyecto, cambiarEstadoTarea } = useProyectos()
@@ -63,6 +65,16 @@ const Proyecto = () => {
             }
         })
     })
+    // Lógica para calcular el progreso en base a las tareas completadas
+    useEffect(() => {
+        if (proyecto.tareas && proyecto.tareas.length > 0) {
+            const tareasCompletadas = proyecto.tareas.filter(tarea => tarea.estado).length;
+            const porcentaje = parseFloat(((tareasCompletadas / proyecto.tareas.length) * 100).toFixed(2));
+            setProgreso(porcentaje);
+        } else {
+            setProgreso(0);
+        }
+    }, [proyecto.tareas]);
 
 
 
@@ -89,6 +101,12 @@ const Proyecto = () => {
                     </div>
                 )}
             </div>
+
+            {proyecto.tareas.length > 0 && (
+                <div>
+                    <BarraDeProgreso progreso={progreso} />
+                </div>
+            )}
 
             {admin && (
                 <button
