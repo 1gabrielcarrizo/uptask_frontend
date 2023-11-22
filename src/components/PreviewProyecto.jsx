@@ -3,7 +3,7 @@ import { Link } from 'react-router-dom'
 import useAuth from '../hooks/useAuth'
 
 const PreviewProyecto = ({ proyecto }) => {
-    console.log(proyecto)
+    // console.log(proyecto)
     const {auth} = useAuth()
     // para diferenciar en donde somos colaboradores, extraemos "creador" de proyecto
     const { nombre, _id, cliente, creador, presupuesto, descripcion } = proyecto
@@ -14,11 +14,7 @@ const PreviewProyecto = ({ proyecto }) => {
             <p className='mb-1 text-xl'><span className='font-bold'>Nombre:</span> {nombre}</p>
             <p className='mb-1 text-sm'><span className='font-bold'>Presupuesto:</span> ${presupuesto}</p>
             <p className='mb-1 text-sm text-gray-500 break-words'><span className='font-bold'>Descripción:</span> {descripcion}</p>
-            {/* <p className='flex-1'>
-                {nombre}
-                <span className='text-sm text-gray-500 uppercase'>
-                    {''} {cliente}</span>
-                </p> */}
+            <p className='mb-1 text-sm text-gray-500 break-words'><span className='font-bold'>Cliente:</span> {cliente}</p>
 
                 {auth._id !== creador && (
                     <p className='p-1 text-xs rounded-lg text-white bg-green-500 font-bold uppercase '>Eres Colaborador/a</p>
