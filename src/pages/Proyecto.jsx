@@ -15,12 +15,10 @@ import BarraDeProgreso from '../components/BarraDeProgreso'
 let socket
 
 const Proyecto = () => {
-    // const [proyectito, setProyectito] = useState(/* Estado del proyecto */);
-    const [progress, setProgress] = useState(0);
+    const [progreso, setProgreso] = useState(0);
 
     const params = useParams() // obtenemos el "id" de la URL
     const { obtenerProyecto, proyecto, cargando, handleModalTarea, alerta, submitTareasProyecto, eliminarTareaProyecto, actualizarTareaProyecto, cambiarEstadoTarea } = useProyectos()
-    console.log(proyecto.tareas)
 
     const admin = useAdmin()
 
@@ -70,12 +68,11 @@ const Proyecto = () => {
     // Lógica para calcular el progreso en base a las tareas completadas
     useEffect(() => {
         if (proyecto.tareas && proyecto.tareas.length > 0) {
-            const completedTasks = proyecto.tareas.filter(tarea => tarea.estado).length;
-            const percentage = parseFloat(((completedTasks / proyecto.tareas.length) * 100).toFixed(2));
-            console.log('Progreso actualizado:', percentage);
-            setProgress(percentage);
+            const tareasCompletadas = proyecto.tareas.filter(tarea => tarea.estado).length;
+            const porcentaje = parseFloat(((tareasCompletadas / proyecto.tareas.length) * 100).toFixed(2));
+            setProgreso(porcentaje);
         } else {
-            setProgress(0);
+            setProgreso(0);
         }
     }, [proyecto.tareas]);
 
@@ -105,9 +102,11 @@ const Proyecto = () => {
                 )}
             </div>
 
-            <div>
-                <BarraDeProgreso progress={progress} />
-            </div>
+            {proyecto.tareas.length > 0 && (
+                <div>
+                    <BarraDeProgreso progreso={progreso} />
+                </div>
+            )}
 
             {admin && (
                 <button
