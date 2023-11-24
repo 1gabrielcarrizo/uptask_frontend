@@ -190,6 +190,7 @@ const ProyectosProvider = ({ children }) => {
                 msg: data.msg,
                 error: false
             })
+            setModalEliminarProyecto(false)
             // luego de eliminar el proyecto, eliminar la alerta y redirigir a "/proyectos"
             setTimeout(() => {
                 setAlerta({})
