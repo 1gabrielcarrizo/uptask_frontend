@@ -102,7 +102,7 @@ const Proyecto = () => {
                 )}
             </div>
 
-            {proyecto.tareas.length > 0 && (
+            {proyecto?.tareas?.length > 0 && (
                 <div>
                     <BarraDeProgreso progreso={progreso} />
                 </div>

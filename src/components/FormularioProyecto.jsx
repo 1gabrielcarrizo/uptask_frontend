@@ -35,7 +35,7 @@ const FormularioProyecto = () => {
     const handleSubmit = async (e) => {
         e.preventDefault()
         setLoading(true)
-        if ([nombre, presupuesto,descripcion, fechaEntrega, cliente].includes('')) {
+        if ([nombre, presupuesto, descripcion, fechaEntrega, cliente].includes('')) {
             mostrarAlerta({
                 msg: 'Todos los campos son obligatorios',
                 error: true
@@ -112,7 +112,7 @@ const FormularioProyecto = () => {
                     htmlFor="presupuesto">
                     Presupuesto
                 </label>
-                <input
+                {/* <input
                     id='presupuesto'
                     className='border w-full p-2 mt-2 placeholder-gray-400 rounded-md bg-gray-50'
                     placeholder='Presupuesto del Proyecto'
@@ -121,6 +121,21 @@ const FormularioProyecto = () => {
                     max={1000000}
                     value={presupuesto}
                     onChange={(e) => setPresupuesto(e.target.value)}
+                /> */}
+                <input
+                    id='presupuesto'
+                    className='border w-full p-2 mt-2 placeholder-gray-400 rounded-md bg-gray-50'
+                    placeholder='Presupuesto del Proyecto'
+                    type="number"
+                    min={1}
+                    max={9999999}
+                    value={presupuesto}
+                    onChange={(e) => {
+                        const inputValue = e.target.value;
+                        if (inputValue.length <= 7) { // Limitar a 7 dígitos
+                            setPresupuesto(inputValue);
+                        }
+                    }}
                 />
             </div>
 
