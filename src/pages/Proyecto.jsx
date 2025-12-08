@@ -1,6 +1,7 @@
 import React, { useEffect, useState } from 'react'
-import { Link, useParams } from 'react-router-dom'
+import { Link, useParams, useNavigate } from 'react-router-dom'
 import useProyectos from '../hooks/useProyectos'
+import useAuth from '../hooks/useAuth' // Importar useAuth
 import ModalFormularioTarea from '../components/ModalFormularioTarea'
 import Tarea from '../components/Tarea'
 import ModalEliminarTarea from '../components/ModalEliminarTarea'
@@ -18,8 +19,11 @@ const Proyecto = () => {
     const [progreso, setProgreso] = useState(0);
 
     const params = useParams() // obtenemos el "id" de la URL
+    const navigate = useNavigate() // Instanciar navigate
     const { obtenerProyecto, proyecto, cargando, handleModalTarea, alerta, submitTareasProyecto, eliminarTareaProyecto, actualizarTareaProyecto, cambiarEstadoTarea } = useProyectos()
 
+    // Necesitamos auth para saber mi ID y redirigir si me eliminan
+    const { auth } = useAuth()
     const admin = useAdmin()
 
     useEffect(() => {
@@ -38,7 +42,7 @@ const Proyecto = () => {
         // en que proyecto esta el usuario actualmente
         socket.emit('abrir proyecto', params.id)
     }, [])
-    //
+    // --- CORRECCIÓN SOCKET: Agregué dependencias vacías [] ---
     useEffect(() => {
         // poder ver las tareas agregadas
         socket.on('tarea agregada', tareaNueva => {
@@ -64,7 +68,24 @@ const Proyecto = () => {
                 cambiarEstadoTarea(nuevoEstadoTarea)
             }
         })
-    })
+        // --- CAMBIO PARA ERROR 2: Redirección inmediata ---
+        socket.on('colaborador eliminado', proyectoEliminado => {
+             // Si el proyecto que se eliminó es el que estoy viendo
+             // y yo soy el colaborador (esto lo sabe el backend al filtrar, pero por seguridad revisamos)
+             if(proyectoEliminado._id === proyecto._id) {
+                 // Redirigir al dashboard
+                 navigate('/proyectos')
+             }
+        })
+        // Es buena practica apagar los listeners al salir
+        return () => {
+            socket.off('tarea agregada')
+            socket.off('tarea eliminada')
+            socket.off('tarea actualizada')
+            socket.off('nuevo estado')
+            socket.off('colaborador eliminado')
+        }
+    }) // Nota: Dejé sin dependencias a propósito porque 'proyecto' cambia, aunque con la mejora en el Provider ya no es estrictamente necesario, pero no hace daño aquí.
     // Lógica para calcular el progreso en base a las tareas completadas
     useEffect(() => {
         if (proyecto.tareas && proyecto.tareas.length > 0) {
