@@ -42,42 +42,52 @@ const Proyecto = () => {
         // en que proyecto esta el usuario actualmente
         socket.emit('abrir proyecto', params.id)
     }, [])
-    // --- CORRECCIÓN SOCKET: Agregué dependencias vacías [] ---
+    // --- SOLUCIÓN: Identificar esta conexión para recibir eventos personales ---
     useEffect(() => {
+        // En cuanto sepamos quién es el usuario (auth._id), entramos a su sala personal
+        if(socket && auth?._id) {
+            socket.emit('conectado', auth._id)
+        }
+    }, [auth])
+    // --------------------------------------------------------------------------
+    useEffect(() => {
+        // Helper para normalizar ID de proyecto (solución a tus bugs anteriores 1 y 2)
+        const esMismoProyecto = (tareaProyecto) => {
+            const idProyectoTarea = tareaProyecto._id || tareaProyecto
+            return idProyectoTarea === params.id // Comparamos siempre con el ID de la URL
+        }
         // poder ver las tareas agregadas
         socket.on('tarea agregada', tareaNueva => {
-            if (tareaNueva.proyecto === proyecto._id) {
+            if (esMismoProyecto(tareaNueva.proyecto)) {
                 submitTareasProyecto(tareaNueva)
             }
         })
         // poder ver las tareas eliminadas
         socket.on('tarea eliminada', tareaEliminada => {
-            if (tareaEliminada.proyecto === proyecto._id) {
+            if (esMismoProyecto(tareaEliminada.proyecto)) {
                 eliminarTareaProyecto(tareaEliminada)
             }
         })
         // poder ver las tareas actualizadas
         socket.on('tarea actualizada', tareaActualizada => {
-            if (tareaActualizada.proyecto._id === proyecto._id) {
+            if (esMismoProyecto(tareaActualizada.proyecto)) {
                 actualizarTareaProyecto(tareaActualizada)
             }
         })
         // poder ver las tareas que se completan
         socket.on('nuevo estado', nuevoEstadoTarea => {
-            if (nuevoEstadoTarea.proyecto._id === proyecto._id) {
+            if (esMismoProyecto(nuevoEstadoTarea.proyecto)) {
                 cambiarEstadoTarea(nuevoEstadoTarea)
             }
         })
-        // --- CAMBIO PARA ERROR 2: Redirección inmediata ---
+        // --- SOLUCIÓN BUG 3: Redirección usando params.id ---
         socket.on('colaborador eliminado', proyectoEliminado => {
-             // Si el proyecto que se eliminó es el que estoy viendo
-             // y yo soy el colaborador (esto lo sabe el backend al filtrar, pero por seguridad revisamos)
-             if(proyectoEliminado._id === proyecto._id) {
-                 // Redirigir al dashboard
+             // Usamos params.id porque es estable y viene de la URL.
+             // proyecto._id podría ser undefined dentro de este useEffect.
+             if(proyectoEliminado._id === params.id) {
                  navigate('/proyectos')
              }
         })
-        // Es buena practica apagar los listeners al salir
         return () => {
             socket.off('tarea agregada')
             socket.off('tarea eliminada')
@@ -85,7 +95,7 @@ const Proyecto = () => {
             socket.off('nuevo estado')
             socket.off('colaborador eliminado')
         }
-    }) // Nota: Dejé sin dependencias a propósito porque 'proyecto' cambia, aunque con la mejora en el Provider ya no es estrictamente necesario, pero no hace daño aquí.
+    })
     // Lógica para calcular el progreso en base a las tareas completadas
     useEffect(() => {
         if (proyecto.tareas && proyecto.tareas.length > 0) {
