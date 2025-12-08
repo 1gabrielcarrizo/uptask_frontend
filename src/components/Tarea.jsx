@@ -38,7 +38,7 @@ const Tarea = ({ tarea }) => {
                     disabled={loading}
                 >
                     {/* {loading ? <Spinner2 /> : (estado ? 'Completa' : 'Incompleta')} */}
-                    {estado ? 'Completar' : 'Desmarcar'}
+                    {estado ? 'Desmarcar' : 'Completar'}
                 </button>
 
                 {admin && (
