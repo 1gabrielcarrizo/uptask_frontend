@@ -61,8 +61,7 @@ const ProyectosProvider = ({ children }) => {
            socket.emit('conectado', auth._id) 
         }
     }, [auth])
-
-    // --- CAMBIO PARA ERROR 2: Escuchar eventos de Dashboard ---
+    // --- AGREGAMOS LOS NUEVOS LISTENERS AQUÍ ---
     useEffect(() => {
         // Alguien te agregó a un proyecto
         socket.on('colaborador agregado', (proyectoNuevo) => {
@@ -75,11 +74,25 @@ const ProyectosProvider = ({ children }) => {
                 proyectosActuales.filter(proyectoState => proyectoState._id !== proyectoEliminado._id)
             )
         })
-
-        // (Opcional) Limpiar listeners al desmontar
+        // Escuchar cuando un proyecto es actualizado (nombre, cliente, etc.)
+        socket.on('proyecto actualizado', (proyectoActualizado) => {
+             setProyectos(proyectosActuales => 
+                proyectosActuales.map(proyectoState => 
+                    proyectoState._id === proyectoActualizado._id ? proyectoActualizado : proyectoState
+                )
+             )
+        })
+        // Escuchar cuando un proyecto es eliminado
+        socket.on('proyecto eliminado', (proyectoEliminado) => {
+             setProyectos(proyectosActuales => 
+                proyectosActuales.filter(proyectoState => proyectoState._id !== proyectoEliminado._id)
+             )
+        })
         return () => {
             socket.off('colaborador agregado')
             socket.off('colaborador eliminado')
+            socket.off('proyecto actualizado')
+            socket.off('proyecto eliminado')
         }
     }, [])
     // -------------------------------------------------------------
@@ -124,7 +137,9 @@ const ProyectosProvider = ({ children }) => {
                 msg: 'Proyecto actualizado correctamente',
                 error: false
             })
-            // luego de actualizar el proyecto, eliminar la alerta y redirigir a "/proyectos"
+            // --- SOCKET: EMITIR EDICIÓN ---
+            socket.emit('editar proyecto', data)
+            // ------------------------------
             setTimeout(() => {
                 setAlerta({})
                 navigate('/proyectos')
@@ -206,7 +221,7 @@ const ProyectosProvider = ({ children }) => {
                     Authorization: `Bearer ${token}`
                 }
             }
-            // en el back la funcion es "eliminarProyecto"
+            // data ahora trae el proyecto eliminado gracias al cambio en el controller
             const { data } = await clienteAxios.delete(`/proyectos/${id}`, config)
             // sincronizar el state
             const proyectosActualizados = proyectos.filter((proyectoState => proyectoState._id !== id))
@@ -216,6 +231,10 @@ const ProyectosProvider = ({ children }) => {
                 msg: data.msg,
                 error: false
             })
+            // --- SOCKET: EMITIR ELIMINACIÓN ---
+            // Enviamos data.proyecto que es lo que devolvió el backend
+            socket.emit('eliminar proyecto', data.proyecto) 
+            // ----------------------------------
             setModalEliminarProyecto(false)
             // luego de eliminar el proyecto, eliminar la alerta y redirigir a "/proyectos"
             setTimeout(() => {
@@ -557,7 +576,8 @@ const ProyectosProvider = ({ children }) => {
                 eliminarTareaProyecto,
                 actualizarTareaProyecto,
                 cambiarEstadoTarea,
-                cerrarSesionProyectos
+                cerrarSesionProyectos,
+                setProyecto
             }}
         >
             {children}

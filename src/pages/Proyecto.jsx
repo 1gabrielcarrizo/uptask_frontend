@@ -20,7 +20,7 @@ const Proyecto = () => {
 
     const params = useParams() // obtenemos el "id" de la URL
     const navigate = useNavigate() // Instanciar navigate
-    const { obtenerProyecto, proyecto, cargando, handleModalTarea, alerta, submitTareasProyecto, eliminarTareaProyecto, actualizarTareaProyecto, cambiarEstadoTarea } = useProyectos()
+    const { obtenerProyecto, proyecto, cargando, handleModalTarea, alerta, submitTareasProyecto, eliminarTareaProyecto, actualizarTareaProyecto, cambiarEstadoTarea, setProyecto } = useProyectos()
 
     // Necesitamos auth para saber mi ID y redirigir si me eliminan
     const { auth } = useAuth()
@@ -88,12 +88,40 @@ const Proyecto = () => {
                  navigate('/proyectos')
              }
         })
+        // --- NUEVO: Actualizar nombre/descripción en tiempo real ---
+        socket.on('proyecto actualizado', proyectoActualizado => {
+            if(proyectoActualizado._id === params.id) {
+                // Sincronizamos el estado local
+                // Usamos una función callback para no perder las tareas actuales
+                // ya que proyectoActualizado (del backend) viene sin tareas (porque select("-tareas") en algunos casos) 
+                // o viene con tareas pero necesitamos mergear con cuidado.
+                // Sin embargo, como editarProyecto devuelve populate de colaboradores,
+                // podemos reemplazar todo SALVO las tareas si queremos ser conservadores,
+                // pero lo más fácil es reemplazarlo. El controller editar devuelve todo menos tareas populadas profundas quizas?
+                // REVISION: En el controller editarProyecto devolvimos el proyecto populado.
+                // PERO, ojo, el controller editarProyecto NO tiene el populate profundo de tareas
+                // que tiene obtenerProyecto.
+                // SOLUCIÓN: Hacemos fetch de nuevo para asegurar consistencia o mergeamos solo info básica.
+                
+                // Opción Segura: Refetch
+                obtenerProyecto(params.id)
+            }
+        })
+
+        // --- NUEVO: Redirigir si el proyecto es eliminado ---
+        socket.on('proyecto eliminado', proyectoEliminado => {
+            if(proyectoEliminado._id === params.id) {
+                 navigate('/proyectos')
+            }
+        })
         return () => {
             socket.off('tarea agregada')
             socket.off('tarea eliminada')
             socket.off('tarea actualizada')
             socket.off('nuevo estado')
             socket.off('colaborador eliminado')
+            socket.off('proyecto actualizado')
+            socket.off('proyecto eliminado')
         }
     })
     // Lógica para calcular el progreso en base a las tareas completadas
