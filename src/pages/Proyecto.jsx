@@ -1,6 +1,7 @@
 import React, { useEffect, useState } from 'react'
-import { Link, useParams } from 'react-router-dom'
+import { Link, useParams, useNavigate } from 'react-router-dom'
 import useProyectos from '../hooks/useProyectos'
+import useAuth from '../hooks/useAuth' // Importar useAuth
 import ModalFormularioTarea from '../components/ModalFormularioTarea'
 import Tarea from '../components/Tarea'
 import ModalEliminarTarea from '../components/ModalEliminarTarea'
@@ -18,8 +19,11 @@ const Proyecto = () => {
     const [progreso, setProgreso] = useState(0);
 
     const params = useParams() // obtenemos el "id" de la URL
-    const { obtenerProyecto, proyecto, cargando, handleModalTarea, alerta, submitTareasProyecto, eliminarTareaProyecto, actualizarTareaProyecto, cambiarEstadoTarea } = useProyectos()
+    const navigate = useNavigate() // Instanciar navigate
+    const { obtenerProyecto, proyecto, cargando, handleModalTarea, alerta, submitTareasProyecto, eliminarTareaProyecto, actualizarTareaProyecto, cambiarEstadoTarea, setProyecto } = useProyectos()
 
+    // Necesitamos auth para saber mi ID y redirigir si me eliminan
+    const { auth } = useAuth()
     const admin = useAdmin()
 
     useEffect(() => {
@@ -38,32 +42,87 @@ const Proyecto = () => {
         // en que proyecto esta el usuario actualmente
         socket.emit('abrir proyecto', params.id)
     }, [])
-    //
+    // --- SOLUCIÓN: Identificar esta conexión para recibir eventos personales ---
     useEffect(() => {
+        // En cuanto sepamos quién es el usuario (auth._id), entramos a su sala personal
+        if(socket && auth?._id) {
+            socket.emit('conectado', auth._id)
+        }
+    }, [auth])
+    // --------------------------------------------------------------------------
+    useEffect(() => {
+        // Helper para normalizar ID de proyecto (solución a tus bugs anteriores 1 y 2)
+        const esMismoProyecto = (tareaProyecto) => {
+            const idProyectoTarea = tareaProyecto._id || tareaProyecto
+            return idProyectoTarea === params.id // Comparamos siempre con el ID de la URL
+        }
         // poder ver las tareas agregadas
         socket.on('tarea agregada', tareaNueva => {
-            if (tareaNueva.proyecto === proyecto._id) {
+            if (esMismoProyecto(tareaNueva.proyecto)) {
                 submitTareasProyecto(tareaNueva)
             }
         })
         // poder ver las tareas eliminadas
         socket.on('tarea eliminada', tareaEliminada => {
-            if (tareaEliminada.proyecto === proyecto._id) {
+            if (esMismoProyecto(tareaEliminada.proyecto)) {
                 eliminarTareaProyecto(tareaEliminada)
             }
         })
         // poder ver las tareas actualizadas
         socket.on('tarea actualizada', tareaActualizada => {
-            if (tareaActualizada.proyecto._id === proyecto._id) {
+            if (esMismoProyecto(tareaActualizada.proyecto)) {
                 actualizarTareaProyecto(tareaActualizada)
             }
         })
         // poder ver las tareas que se completan
         socket.on('nuevo estado', nuevoEstadoTarea => {
-            if (nuevoEstadoTarea.proyecto._id === proyecto._id) {
+            if (esMismoProyecto(nuevoEstadoTarea.proyecto)) {
                 cambiarEstadoTarea(nuevoEstadoTarea)
             }
         })
+        // --- SOLUCIÓN BUG 3: Redirección usando params.id ---
+        socket.on('colaborador eliminado', proyectoEliminado => {
+             // Usamos params.id porque es estable y viene de la URL.
+             // proyecto._id podría ser undefined dentro de este useEffect.
+             if(proyectoEliminado._id === params.id) {
+                 navigate('/proyectos')
+             }
+        })
+        // --- NUEVO: Actualizar nombre/descripción en tiempo real ---
+        socket.on('proyecto actualizado', proyectoActualizado => {
+            if(proyectoActualizado._id === params.id) {
+                // Sincronizamos el estado local
+                // Usamos una función callback para no perder las tareas actuales
+                // ya que proyectoActualizado (del backend) viene sin tareas (porque select("-tareas") en algunos casos) 
+                // o viene con tareas pero necesitamos mergear con cuidado.
+                // Sin embargo, como editarProyecto devuelve populate de colaboradores,
+                // podemos reemplazar todo SALVO las tareas si queremos ser conservadores,
+                // pero lo más fácil es reemplazarlo. El controller editar devuelve todo menos tareas populadas profundas quizas?
+                // REVISION: En el controller editarProyecto devolvimos el proyecto populado.
+                // PERO, ojo, el controller editarProyecto NO tiene el populate profundo de tareas
+                // que tiene obtenerProyecto.
+                // SOLUCIÓN: Hacemos fetch de nuevo para asegurar consistencia o mergeamos solo info básica.
+                
+                // Opción Segura: Refetch
+                obtenerProyecto(params.id)
+            }
+        })
+
+        // --- NUEVO: Redirigir si el proyecto es eliminado ---
+        socket.on('proyecto eliminado', proyectoEliminado => {
+            if(proyectoEliminado._id === params.id) {
+                 navigate('/proyectos')
+            }
+        })
+        return () => {
+            socket.off('tarea agregada')
+            socket.off('tarea eliminada')
+            socket.off('tarea actualizada')
+            socket.off('nuevo estado')
+            socket.off('colaborador eliminado')
+            socket.off('proyecto actualizado')
+            socket.off('proyecto eliminado')
+        }
     })
     // Lógica para calcular el progreso en base a las tareas completadas
     useEffect(() => {
